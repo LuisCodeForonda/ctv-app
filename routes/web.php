@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\MarcaController;
+use App\Http\Controllers\MarcasController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -35,7 +37,7 @@ Volt::route('/roles/{role}/edit', 'roles.edit')->middleware(['auth'])->name('rol
 Volt::route('/marcas', 'marcas.index')->middleware(['auth'])->name('marcas.index');
 Volt::route('/marcas/create', 'marcas.create')->middleware(['auth'])->name('marcas.create');
 Volt::route('/marcas/{marca}/edit', 'marcas.edit')->middleware(['auth'])->name('marcas.edit');
-
+Route::get('/marcas/export/{format}', [MarcaController::class, 'export'])->middleware(['auth'])->name('marcas.export');
 
 Volt::route('/responsables', 'responsables.index')->middleware(['auth'])->name('responsables.index');
 Volt::route('/responsables/create', 'responsables.create')->middleware(['auth'])->name('responsables.create');
@@ -44,6 +46,7 @@ Volt::route('/responsables/{responsable}/edit', 'responsables.edit')->middleware
 
 Volt::route('/equipos', 'equipos.index')->middleware(['auth'])->name('equipos.index');
 Volt::route('/equipos/create', 'equipos.create')->middleware(['auth'])->name('equipos.create');
+Volt::route('/equipos/{slug}', 'equipos.show')->middleware(['auth'])->name('equipos.show');
 Volt::route('/equipos/{equipo}/edit', 'equipos.edit')->middleware(['auth'])->name('equipos.edit');
 
 
@@ -55,7 +58,7 @@ Volt::route('/componentes/{componente}/edit', 'componentes.edit')->middleware(['
 Volt::route('/categorias', 'categorias.index')->middleware(['auth'])->name('categorias.index');
 Volt::route('/categorias/create', 'categorias.create')->middleware(['auth'])->name('categorias.create');
 Volt::route('/categorias/{categoria}/edit', 'categorias.edit')->middleware(['auth'])->name('categorias.edit');
-
+Route::get('/categorias/export/{format}', [MarcaController::class, 'export'])->middleware(['auth'])->name('categorias.export');;
 
 Volt::route('/noticias', 'noticias.index')->middleware(['auth'])->name('noticias.index');
 Volt::route('/noticias/create', 'noticias.create')->middleware(['auth'])->name('noticias.create');

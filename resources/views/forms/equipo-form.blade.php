@@ -70,13 +70,13 @@
         </select>
     </div>
     <div>
-        <label for="encargado_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">A cargo
+        <label for="responsable_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">A cargo
             de:</label>
-        <select id="encargado_id" wire:model="encargado_id" name="encargado_id"
+        <select id="responsable_id" wire:model="responsable_id" name="responsable_id"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
             <option value="">Selecciona</option>
-            @foreach ($encargados as $encargado)
-                <option value="{{ $encargado->id }}" @selected($encargado_id == $encargado->id)>{{ $encargado->nombre }}
+            @foreach ($responsables as $responsable)
+                <option value="{{ $responsable->id }}" @selected($responsable_id == $responsable->id)>{{ $responsable->nombre }}
                 </option>
             @endforeach
         </select>

@@ -1,11 +1,11 @@
 <div class="grid gap-4 mb-4">
-    <div>
-        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file">Subir
+    <div class="flex flex-col gap-2">
+        <label class="block text-sm font-medium text-gray-900 dark:text-white" for="file">Subir
             archivo</label>
         <input
             class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-            id="file" name="file" wire:model="file" type="file" multiple>
-        <x-input-error :messages="$errors->get('file')" class="mt-2" />
+            id="file" name="file" wire:model="file" type="file">
+        <x-input-error :messages="$errors->get('file')" />
     </div>
 
     <div wire:loading wire:target="file">
@@ -24,9 +24,7 @@
     </div>
     <div>
         @if ($file)
-            @foreach ($file as $item)
-                <p>{{ $item->getClientOriginalName() }}</p>
-            @endforeach
+            <p>{{ $file->getClientOriginalName() }}</p>
         @endif
     </div>
 </div>

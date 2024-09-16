@@ -2,7 +2,7 @@
 
 <div 
     class="text-gray-900 dark:text-white fixed top-0 left-0 right-0 z-10 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full bg-slate-800/35">
-    <div class="relative w-full max-w-{{ $width }} max-h-full mx-auto">
+    <div {{ $attributes->merge(['class' => 'relative max-w-'.$width.' max-h-full mx-auto']) }}>
         <!-- Modal content -->
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <!-- Modal header -->

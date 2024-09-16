@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('modelo', 30)->nullable();
             $table->string('serie', 30)->nullable();
             $table->integer('cantidad')->default(1);
-            $table->tinyInteger('estado')->default(1);
             $table->foreignId('marca_id')->nullable()->constrained('marcas')->cascadeOnUpdate()->nullOnDelete();
             $table->foreignId('equipo_id')->nullable()->constrained('equipos')->cascadeOnUpdate()->nullOnDelete();
             $table->timestamps();

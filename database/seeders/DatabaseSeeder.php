@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Marca;
+use App\Models\Responsable;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
@@ -71,5 +74,8 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('12345678'),
             'enabled' => true,
         ])->assignRole('admin');
+
+        Marca::factory(100)->create();
+        Responsable::factory(100)->create();
     }
 }

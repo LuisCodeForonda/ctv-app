@@ -69,7 +69,7 @@
                         <li class="border-l-2">
                             <a href="{{ route('roles.index') }}" wire:navigate class="cursor-pointer ">
                                 <span
-                                    class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('componente.index') ? 'text-white bg-slate-300/30' : '' }}">RRoles</span>
+                                    class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('componente.index') ? 'text-white bg-slate-300/30' : '' }}">Roles</span>
                             </a>
                         </li>
 
@@ -92,7 +92,7 @@
                         <li class="border-l-2">
                             <a href="{{ route('responsables.index') }}" wire:navigate class="cursor-pointer ">
                                 <span
-                                    class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('encargado.index') ? 'text-white bg-slate-300/30' : '' }}">Encargado</span>
+                                    class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('encargado.index') ? 'text-white bg-slate-300/30' : '' }}">Responsables</span>
                             </a>
                         </li>
                         <li class="border-l-2">

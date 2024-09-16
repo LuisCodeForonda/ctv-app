@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('slug');
             $table->longText('body');
             $table->string('image');
-            $table->boolean('status');
+            $table->boolean('status')->default(false);
             $table->foreignId('categoria_id')->nullable()->constrained('categorias')->cascadeOnUpdate()->nullOnDelete();
             $table->foreignId('user_id')->nullable()->constrained('users')->cascadeOnUpdate()->nullOnDelete();
             $table->timestamps();

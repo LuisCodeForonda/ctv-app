@@ -10,4 +10,8 @@ class Componente extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+
+    public function marca(){
+        return $this->belongsTo(Marca::class);
+    }
 }

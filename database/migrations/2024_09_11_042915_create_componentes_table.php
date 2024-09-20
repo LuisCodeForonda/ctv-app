@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('componentes', function (Blueprint $table) {
             $table->id();
-            $table->string('descripcion', 100);
-            $table->string('observaciones', 30)->nullable();
+            $table->longText('descripcion');
+            $table->longText('observaciones')->nullable();
             $table->string('modelo', 30)->nullable();
             $table->string('serie', 30)->nullable();
             $table->integer('cantidad')->default(1);

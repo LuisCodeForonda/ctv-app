@@ -5,24 +5,23 @@ namespace App\Exports;
 use App\Models\Marca;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Concerns\FromView;
 
-class MarcasExport implements FromCollection, WithHeadingRow, WithMapping
+class MarcasExport implements FromView, WithMapping
 {
     /**
     * @return \Illuminate\Support\Collection
     */
-    public function collection()
-    {
-        return Marca::all();
-    }
+    // public function collection()
+    // {
+    //     return Marca::all();
+    // }
 
-    public function model(array $row)
+    public function view(): View
     {
-        return new Marca([
-            'codigo'  => $row['id'],
-            'nombre' => $row['nombre'],
-            'fecha de creacion'    => $row['created_at'],
+        return view('exports.marcas', [
+            'data' => Marca::all()
         ]);
     }
 

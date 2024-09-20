@@ -114,7 +114,7 @@ new #[Layout('layouts.app')] class extends Component {
                                 class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">excel</a>
                         </li>
                         <li>
-                            <a x-on:click="dropdown = !dropdown" href="{{ route('marcas.export', 'pdf')}}"
+                            <a x-on:click="dropdown = !dropdown" href="#"
                                 class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">pdf</a>
                         </li>
                         <li>

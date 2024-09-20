@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\ComponenteController;
+use App\Http\Controllers\EquipoController;
 use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\MarcasController;
+use App\Http\Controllers\ResponsableController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -42,18 +45,18 @@ Route::get('/marcas/export/{format}', [MarcaController::class, 'export'])->middl
 Volt::route('/responsables', 'responsables.index')->middleware(['auth'])->name('responsables.index');
 Volt::route('/responsables/create', 'responsables.create')->middleware(['auth'])->name('responsables.create');
 Volt::route('/responsables/{responsable}/edit', 'responsables.edit')->middleware(['auth'])->name('responsables.edit');
-
+Route::get('/responsables/export/{format}', [ResponsableController::class, 'export'])->middleware(['auth'])->name('responsables.export');
 
 Volt::route('/equipos', 'equipos.index')->middleware(['auth'])->name('equipos.index');
 Volt::route('/equipos/create', 'equipos.create')->middleware(['auth'])->name('equipos.create');
 Volt::route('/equipos/{slug}', 'equipos.show')->middleware(['auth'])->name('equipos.show');
 Volt::route('/equipos/{equipo}/edit', 'equipos.edit')->middleware(['auth'])->name('equipos.edit');
-
+Route::get('/equipos/export/{format}', [EquipoController::class, 'export'])->middleware(['auth'])->name('equipos.export');
 
 Volt::route('/componentes', 'componentes.index')->middleware(['auth'])->name('componentes.index');
 Volt::route('/componentes/create', 'componentes.create')->middleware(['auth'])->name('componentes.create');
 Volt::route('/componentes/{componente}/edit', 'componentes.edit')->middleware(['auth'])->name('componentes.edit');
-
+Route::get('/componentes/export/{format}', [ComponenteController::class, 'export'])->middleware(['auth'])->name('componentes.export');
 
 Volt::route('/categorias', 'categorias.index')->middleware(['auth'])->name('categorias.index');
 Volt::route('/categorias/create', 'categorias.create')->middleware(['auth'])->name('categorias.create');

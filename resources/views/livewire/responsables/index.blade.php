@@ -100,15 +100,49 @@ new #[Layout('layouts.app')] class extends Component {
                         placeholder="Buscar..." />
                 </div>
             </div>
-            <div class="max-w-sm">
-                <select id="countries" wire:model.live="paginate"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                    <option selected value="10">10 registros</option>
-                    <option value="25">25 registros</option>
-                    <option value="50">50 registros</option>
-                    <option value="100">100 registros</option>
-                </select>
+            <div class="grid grid-cols-2 gap-2">
+                <div x-data="{ dropdown: false }" x-on:click.away="dropdown = false" class="relative">
+                    <button x-on:click="dropdown = !dropdown"
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        type="button">Exportar<svg class="w-2.5 h-2.5 ms-3" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 4 4 4-4" />
+                        </svg>
+                    </button>
+    
+                    <!-- Dropdown menu -->
+                    <div x-show="dropdown"
+                        class="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                            <li>
+                                <a x-on:click="dropdown = !dropdown" href="{{ route('responsables.export', 'excel')}}"
+                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">excel</a>
+                            </li>
+                            <li>
+                                <a x-on:click="dropdown = !dropdown" href="#"
+                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">pdf</a>
+                            </li>
+                            <li>
+                                <a x-on:click="dropdown = !dropdown" href="{{ route('responsables.export', 'csv')}}"
+                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">csv</a>
+                            </li>
+    
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="max-w-sm">
+                    <select id="countries" wire:model.live="paginate"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <option selected value="10">10 registros</option>
+                        <option value="25">25 registros</option>
+                        <option value="50">50 registros</option>
+                        <option value="100">100 registros</option>
+                    </select>
+                </div>
             </div>
+            
 
         </div>
 

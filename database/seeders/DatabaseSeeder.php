@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Componente;
+use App\Models\Equipo;
 use App\Models\Marca;
 use App\Models\Responsable;
 use Illuminate\Database\Seeder;
@@ -77,5 +79,7 @@ class DatabaseSeeder extends Seeder
 
         Marca::factory(100)->create();
         Responsable::factory(100)->create();
+        Componente::factory(40)->create();
+        Equipo::factory(500)->create();
     }
 }

@@ -76,127 +76,137 @@ new #[Layout('layouts.app')] class extends Component {
         <h1 class="font-bold">Marcas</h1>
     @endslot
 
-    <x-primary-button href="{{ route('marcas.create') }}" wire:navigate>Nuevo</x-primary-button>
-
-    <div class="flex flex-row justify-between items-center py-2">
-        <div class="flex items-center w-64 max-w-sm">
-            <label for="simple-search" class="sr-only">Search</label>
-            <div class="relative w-full">
-                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 5v10M3 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm12 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm0 0V6a3 3 0 0 0-3-3H9m1.5-2-2 2 2 2" />
-                    </svg>
-                </div>
-                <input type="text" wire:model.live.debounce.500ms="search" id="simple-search"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Buscar..." />
-            </div>
+    @if ($data->isEmpty())
+        <div class="text-center mt-8">
+            <p class="mb-4 text-2xl">Aún no hay marcas</p>
+            <x-primary-button href="{{ route('marcas.create') }}" wire:navigate>Nuevo</x-primary-button>
         </div>
-        <div class="flex gap-2">
-            <div x-data="{ dropdown: false }" x-on:click.away="dropdown = false" class="relative">
-                <button x-on:click="dropdown = !dropdown"
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                    type="button">Exportar<svg class="w-2.5 h-2.5 ms-3" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="m1 1 4 4 4-4" />
-                    </svg>
-                </button>
+    @else
+        <x-primary-button href="{{ route('marcas.create') }}" wire:navigate>Nuevo</x-primary-button>
 
-                <!-- Dropdown menu -->
-                <div x-show="dropdown"
-                    class="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-                        <li>
-                            <a x-on:click="dropdown = !dropdown" href="{{ route('marcas.export', 'excel')}}"
-                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">excel</a>
-                        </li>
-                        <li>
-                            <a x-on:click="dropdown = !dropdown" href="#"
-                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">pdf</a>
-                        </li>
-                        <li>
-                            <a x-on:click="dropdown = !dropdown" href="{{ route('marcas.export', 'csv')}}"
-                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">csv</a>
-                        </li>
-
-                    </ul>
+        <div class="flex flex-row justify-between items-center py-2">
+            <div class="flex items-center w-64 max-w-sm">
+                <label for="simple-search" class="sr-only">Search</label>
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 5v10M3 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm12 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm0 0V6a3 3 0 0 0-3-3H9m1.5-2-2 2 2 2" />
+                        </svg>
+                    </div>
+                    <input type="text" wire:model.live.debounce.500ms="search" id="simple-search"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Buscar..." />
                 </div>
             </div>
+            <div class="flex gap-2">
+                <div x-data="{ dropdown: false }" x-on:click.away="dropdown = false" class="relative">
+                    <button x-on:click="dropdown = !dropdown"
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        type="button">Exportar<svg class="w-2.5 h-2.5 ms-3" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 4 4 4-4" />
+                        </svg>
+                    </button>
 
-            <div class="w-32">
-                <select id="countries" wire:model.live="paginate"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                    <option selected value="10">10 registros</option>
-                    <option value="25">25 registros</option>
-                    <option value="50">50 registros</option>
-                    <option value="100">100 registros</option>
-                </select>
+                    <!-- Dropdown menu -->
+                    <div x-show="dropdown"
+                        class="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                            aria-labelledby="dropdownDefaultButton">
+                            <li>
+                                <a x-on:click="dropdown = !dropdown" href="{{ route('marcas.export', 'excel') }}"
+                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">excel</a>
+                            </li>
+                            <li>
+                                <a x-on:click="dropdown = !dropdown" href="#"
+                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">pdf</a>
+                            </li>
+                            <li>
+                                <a x-on:click="dropdown = !dropdown" href="{{ route('marcas.export', 'csv') }}"
+                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">csv</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="w-32">
+                    <select id="countries" wire:model.live="paginate"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <option selected value="10">10 registros</option>
+                        <option value="25">25 registros</option>
+                        <option value="50">50 registros</option>
+                        <option value="100">100 registros</option>
+                    </select>
+                </div>
             </div>
+
+
         </div>
 
-
-    </div>
-
-    <div class="relative overflow-x-auto">
-        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                    @include('includes.table-sortable', [
-                        'name' => 'nombre',
-                        'displayName' => 'Nombre',
-                    ])
-                    @include('includes.table-sortable', [
-                        'name' => 'created_at',
-                        'displayName' => 'Fecha creacion',
-                    ])
-                    @include('includes.table-sortable', [
-                        'name' => 'updated_at',
-                        'displayName' => 'Fecha edicion',
-                    ])
-                    <th scope="col" class="px-6 py-3">
-                        Acciones
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($data as $item)
-                    <tr wire:key="{{ $item->id }}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                        <th scope="row"
-                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ $item->nombre }}
+        <div class="relative overflow-x-auto">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        @include('includes.table-sortable', [
+                            'name' => 'nombre',
+                            'displayName' => 'Nombre',
+                        ])
+                        @include('includes.table-sortable', [
+                            'name' => 'created_at',
+                            'displayName' => 'Fecha creacion',
+                        ])
+                        @include('includes.table-sortable', [
+                            'name' => 'updated_at',
+                            'displayName' => 'Fecha edicion',
+                        ])
+                        <th scope="col" class="px-6 py-3">
+                            Acciones
                         </th>
-                        <td class="px-6 py-4">
-                            {{ $item->created_at }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $item->updated_at }}
-                        </td>
-                        <td class="px-6 py-4 flex gap-4">
-                            <button wire:click="view({{ $item->id }})"
-                                class="font-medium text-yellow-500 dark:text-yellow-500 hover:underline">
-                                Show
-                            </button>
-
-                            <a href="{{ route('marcas.edit', $item) }}" wire:navigate
-                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
-
-                            <button wire:click="destroy({{ $item->id }})"
-                                class="font-medium text-red-500 dark:text-red-500 hover:underline">
-                                Eliminar
-                            </button>
-                        </td>
                     </tr>
-                @endforeach
-            </tbody>
+                </thead>
+                <tbody>
+                    @foreach ($data as $item)
+                        <tr wire:key="{{ $item->id }}"
+                            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                            <th scope="row"
+                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                {{ $item->nombre }}
+                            </th>
+                            <td class="px-6 py-4">
+                                {{ $item->created_at }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ $item->updated_at }}
+                            </td>
+                            <td class="px-6 py-4 flex gap-4">
+                                <button wire:click="view({{ $item->id }})"
+                                    class="font-medium text-yellow-500 dark:text-yellow-500 hover:underline">
+                                    Show
+                                </button>
 
-        </table>
-        <div class="py-2">
-            {{ $data->links() }}
+                                <a href="{{ route('marcas.edit', $item) }}" wire:navigate
+                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
+
+                                <button wire:click="destroy({{ $item->id }})"
+                                    class="font-medium text-red-500 dark:text-red-500 hover:underline">
+                                    Eliminar
+                                </button>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+
+            </table>
+            <div class="py-2">
+                {{ $data->links() }}
+            </div>
         </div>
-    </div>
+    @endif
+
 
     @if ($show)
         <x-modal-show title="Detalle del marca">

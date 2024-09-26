@@ -104,7 +104,7 @@ new #[Layout('layouts.app')] class extends Component {
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-2">
+            <div class="flex gap-2">
 
                 <div x-data="{ dropdown: false }" x-on:click.away="dropdown = false" class="relative">
                     <button x-on:click="dropdown = !dropdown"
@@ -137,7 +137,7 @@ new #[Layout('layouts.app')] class extends Component {
                     </div>
                 </div>
 
-                <div class="max-w-sm">
+                <div class="w-32">
                     <select wire:model.live="paginate"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         <option selected value="10">10 registros</option>

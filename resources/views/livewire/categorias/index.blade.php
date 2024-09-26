@@ -117,15 +117,15 @@ new #[Layout('layouts.app')] class extends Component {
                         <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
                             aria-labelledby="dropdownDefaultButton">
                             <li>
-                                <a x-on:click="dropdown = !dropdown" href="{{ route('categorias.export', 'excel') }}"
+                                <a x-on:click="dropdown = !dropdown" href="#"
                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">excel</a>
                             </li>
                             <li>
-                                <a x-on:click="dropdown = !dropdown" href="{{ route('categorias.export', 'pdf') }}"
+                                <a x-on:click="dropdown = !dropdown" href="#"
                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">pdf</a>
                             </li>
                             <li>
-                                <a x-on:click="dropdown = !dropdown" href="{{ route('categorias.export', 'csv') }}"
+                                <a x-on:click="dropdown = !dropdown" href="#"
                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">csv</a>
                             </li>
 

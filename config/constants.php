@@ -22,8 +22,8 @@ return [
     ],
 
     'cuenta' => [
-        1 => 'Habilitado',
-        2 => 'Deshabilitado'
+        0 => 'Deshabilitada',
+        1 => 'Habilitada',
     ]
    
 ];

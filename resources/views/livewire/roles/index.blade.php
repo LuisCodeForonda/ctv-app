@@ -5,6 +5,7 @@ use Illuminate\Support\Str;
 use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 new #[Layout('layouts.app')] class extends Component {
     use WithPagination;
@@ -15,6 +16,7 @@ new #[Layout('layouts.app')] class extends Component {
     public $show = false;
     public $showDelete = false;
     public $rol;
+    public $selectedPermissions = [];
 
     //ordenar
     public $sortBy = 'created_at';
@@ -24,6 +26,7 @@ new #[Layout('layouts.app')] class extends Component {
     public function view($id)
     {
         $this->rol = Role::findOrFail($id);
+        $this->selectedPermissions = $this->rol->permissions()->pluck('name')->toArray();
         $this->show = true;
     }
 
@@ -67,6 +70,7 @@ new #[Layout('layouts.app')] class extends Component {
             'data' => Role::where('name', 'LIKE', '%' . $this->search . '%')
                 ->orderBy($this->sortBy, $this->sortDir)
                 ->paginate($this->paginate),
+            'permisos' => Permission::all()->groupBy('category')->toArray(),
         ];
     }
 }; ?>
@@ -166,7 +170,7 @@ new #[Layout('layouts.app')] class extends Component {
     @endif
 
     @if ($show)
-        <x-modal-show title="Detalles del rol">
+        <x-modal-show title="Detalles del rol" width="xl">
             <strong>Nombre</strong>
             <p>{{ $rol->name }}</p>
             <strong>Permisos</strong>
@@ -179,7 +183,7 @@ new #[Layout('layouts.app')] class extends Component {
                             @foreach ($perms as $permission)
                                 <li>
                                     <input type="checkbox" id="{{ $permission['name'] }}"
-                                        wire:model="selectedPermissions" value="{{ $permission['name'] }}"
+                                    wire:model="selectedPermissions" value="{{ $permission['name'] }}"
                                         class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                     <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
                                         for="{{ $permission['name'] }}">{{ $permission['name'] }}

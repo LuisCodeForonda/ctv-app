@@ -38,19 +38,22 @@
 </head>
 
 <body class="font-sans antialiased">
-    <div class="flex flex-row min-h-screen bg-gray-100 dark:bg-gray-900 dark:text-slate-100">
+     <div class="flex flex-row min-h-screen bg-gray-100 dark:bg-gray-900 dark:text-slate-100">
 
         <div class="box-1 bg-gray-800 dark:bg-gray-800 min-w-12 w-56 h-screen ">
 
-            {{-- logo --}}
+            
+            <!-- logo -->
+            
             <div class="text-center">
                 <a href="dashboard" wire:navigate class="block text-nowrap py-4 px-1">
                     <img src="{{ asset('images/ctvmosca.png') }}" alt="" class="h-10 w-12 inline-block mr-2">
-                    <h1 class="inline-block align-middle text-4xl font-bold">CTV</h1>
+                    <h1 class="inline-block align-middle text-4xl font-bold text-white">CTV</h1>
                 </a>
             </div>
 
-            {{-- menu de navegacion --}}
+            
+             <!-- menu de navegacion -->
             <ul class="relative">
                 <li class="overflow-hidden">
                     <button
@@ -60,19 +63,23 @@
                         <img src="{{ asset('icons/chevron-right.svg') }}" alt="" class="px-4 icon_arrow">
                     </button>
                     <ul class="h-0 pl-10 show_menu">
+
+                        @can('usuario index')
                         <li class="border-l-2">
                             <a href="{{ route('usuarios.index') }}" wire:navigate class="cursor-pointer">
                                 <span
                                     class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('marcas.index') ? 'text-white bg-slate-300/30' : '' }}">Usuarios</span>
                             </a>
                         </li>
+                        @endcan
+                        @can('rol index')
                         <li class="border-l-2">
                             <a href="{{ route('roles.index') }}" wire:navigate class="cursor-pointer ">
                                 <span
                                     class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('componente.index') ? 'text-white bg-slate-300/30' : '' }}">Roles</span>
                             </a>
                         </li>
-
+                        @endcan
                     </ul>
                 </li>
                 <li class="overflow-hidden">
@@ -83,30 +90,38 @@
                         <img src="{{ asset('icons/chevron-right.svg') }}" alt="" class="px-4 icon_arrow">
                     </button>
                     <ul class="h-0 pl-10 show_menu">
+                        @can('marca index')
                         <li class="border-l-2">
                             <a href="{{ route('marcas.index') }}" wire:navigate class="cursor-pointer">
                                 <span
                                     class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('marcas.index') ? 'text-white bg-slate-300/30' : '' }}">Marcas</span>
                             </a>
                         </li>
+                        @endcan
+                        @can('responsable index')
                         <li class="border-l-2">
                             <a href="{{ route('responsables.index') }}" wire:navigate class="cursor-pointer ">
                                 <span
                                     class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('encargado.index') ? 'text-white bg-slate-300/30' : '' }}">Responsables</span>
                             </a>
                         </li>
+                        @endcan
+                        @can('componente index')
                         <li class="border-l-2">
                             <a href="{{ route('componentes.index') }}" wire:navigate class="cursor-pointer ">
                                 <span
                                     class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('componente.index') ? 'text-white bg-slate-300/30' : '' }}">Componente</span>
                             </a>
                         </li>
+                        @endcan
+                        @can('equipo index')
                         <li class="border-l-2">
                             <a href="{{ route('equipos.index') }}" wire:navigate class="cursor-pointer ">
                                 <span
                                     class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('equipo.index') ? 'text-white bg-slate-300/30' : '' }}">Equipos</span>
                             </a>
                         </li>
+                        @endcan
                     </ul>
                 </li>
                 <li class="overflow-hidden">
@@ -117,19 +132,22 @@
                         <img src="{{ asset('icons/chevron-right.svg') }}" alt="" class="px-4 icon_arrow">
                     </button>
                     <ul class="h-0 pl-10 show_menu">
+                        @can('categoria index')
                         <li class="border-l-2">
                             <a href="{{ route('categorias.index') }}" wire:navigate class="cursor-pointer">
                                 <span
                                     class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30">Categorias</span>
                             </a>
                         </li>
+                        @endcan
+                        @can('noticia index')
                         <li class="border-l-2">
                             <a href="{{ route('noticias.index') }}" wire:navigate class="cursor-pointer ">
                                 <span
-                                    class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30">Post</span>
+                                    class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30">Noticias</span>
                             </a>
                         </li>
-
+                        @endcan
                     </ul>
                 </li>
             </ul>
@@ -149,22 +167,25 @@
             </div>
 
             <!-- Page Content -->
-            <main class="relative bg-white dark:bg-gray-900 p-4 min-h-full">
+            <main class="relative bg-white dark:bg-gray-900 p-4 w-full min-h-full ">
                 {{ $slot }}
             </main>
         </div>
 
-        <!-- Page Heading -->
-        {{-- @if (isset($header))
+       
+
+        
+
+    </div> 
+
+    <!-- Page Heading -->
+    {{-- @if (isset($header))
                 <header class="bg-white dark:bg-gray-800 shadow">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
                 </header>
             @endif --}}
-
-    </div>
-
     <script>
         var toogle_menu = document.querySelector('.toogle_menu');
         var items = document.querySelectorAll('.list-button')
@@ -184,7 +205,9 @@
                 submenu.style.height = `${height}px`;
             });
         })
-    </script>
+    </script> 
+
+    
 </body>
 
 </html>

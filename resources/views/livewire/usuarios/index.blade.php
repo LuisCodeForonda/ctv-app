@@ -127,7 +127,7 @@ new #[Layout('layouts.app')] class extends Component {
                         ])
                         @include('includes.table-sortable', [
                             'name' => 'enabled',
-                            'displayName' => 'Habilitado',
+                            'displayName' => 'Cuenta',
                         ])
                         <th scope="col" class="px-6 py-3">
                             Roles
@@ -149,10 +149,10 @@ new #[Layout('layouts.app')] class extends Component {
                                 {{ $item->email }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ $item->enabled }}
+                                {{ config('constants.cuenta')[$item->enabled] }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ $item->getRoleNames()->first() }}
+                                {{ $item->getRoleNames()->first() ?? 'null' }}
                             </td>
                             <td class="px-6 py-4 flex gap-4">
                                 <button wire:click="view({{ $item->id }})"

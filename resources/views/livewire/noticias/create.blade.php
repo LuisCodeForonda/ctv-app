@@ -59,7 +59,7 @@ new #[Layout('layouts.app')] class extends Component {
     @endslot
 
     <h1 class="text-center">Formulario</h1>
-    <x-layout-form>
+    <x-layout-form width="xl">
         @include('forms.noticia-form')
 
         <div class="flex justify-end gap-2">

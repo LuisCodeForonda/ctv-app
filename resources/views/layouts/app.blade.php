@@ -14,6 +14,7 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    {{-- <link rel="stylesheet" href="{{ asset('build\assets\app-01043519.css')}}"> --}}
     <style>
         .box {
             width: 3.5rem;
@@ -64,7 +65,7 @@
                     </button>
                     <ul class="h-0 pl-10 show_menu">
 
-                        @can('usuario index')
+                        @can('user index')
                         <li class="border-l-2">
                             <a href="{{ route('usuarios.index') }}" wire:navigate class="cursor-pointer">
                                 <span
@@ -207,7 +208,7 @@
         })
     </script> 
 
-    
+    {{-- <link rel="stylesheet" href="{{ asset('build\assets\app-09f45680.js')}}"> --}}
 </body>
 
 </html>

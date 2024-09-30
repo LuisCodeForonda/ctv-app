@@ -151,6 +151,10 @@ new #[Layout('layouts.app')] class extends Component {
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         @include('includes.table-sortable', [
+                            'name' => 'id',
+                            'displayName' => 'ID',
+                        ])
+                        @include('includes.table-sortable', [
                             'name' => 'nombre',
                             'displayName' => 'Nombre',
                         ])
@@ -175,6 +179,9 @@ new #[Layout('layouts.app')] class extends Component {
                     @foreach ($data as $item)
                         <tr wire:key="{{ $item->id }}"
                             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                            <td class="px-6 py-4">
+                                {{ $item->id }}
+                            </td>
                             <th scope="row"
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $item->nombre }}

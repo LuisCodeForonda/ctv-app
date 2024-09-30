@@ -25,15 +25,11 @@ new #[Layout('layouts.app')] class extends Component {
 
     public function save()
     {
-        $this->nombre = Str::of($this->nombre)->trim();
-        $this->cargo = Str::of($this->cargo)->trim();
-        $this->carnet = Str::of($this->carnet)->trim();
-        $this->celular = Str::of($this->celular)->trim();
 
         $this->validate([
             'nombre' => 'required|max:30',
             'cargo' => 'required|max:30',
-            'carnet' => 'max:15',
+            'carnet' => 'required|max:15|unique:responsables',
             'celular' => 'required|max:15',
         ]);
 

@@ -64,8 +64,6 @@ new class extends Component {
             'extension' => $extension,
             'equipo_id' => $this->equipo->id,
         ]);
-        // foreach ($this->file as $item) {
-        // }
 
         session()->flash('message', $this->archivo_id ? 'Actualizado Exitosamente.' : 'Creado Exitosamente.');
 

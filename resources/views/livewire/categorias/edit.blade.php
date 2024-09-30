@@ -29,8 +29,6 @@ new #[Layout('layouts.app')] class extends Component {
             'nombre' => $this->nombre,
         ]);
 
-        $this->reset('nombre');
-
         return $this->redirect('/categorias', navigate: true);
     }
 }; ?>

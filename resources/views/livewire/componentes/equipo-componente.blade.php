@@ -14,7 +14,6 @@ new class extends Component {
     public $modelo;
     public $serie;
     public $cantidad = 1;
-    public $estado;
     public $marca_id;
     public $equipo_id;
     public $componente;
@@ -63,19 +62,18 @@ new class extends Component {
                 break;
             case 'extraer':
                 $this->isExtraer = true;
-               
+
             default:
                 # code...
                 break;
         }
-
     }
 
     public function closeModal()
     {
         $this->resetValidation();
         $this->reset('selectedComponentes');
-        $this->reset('descripcion', 'observaciones', 'modelo', 'serie', 'cantidad', 'estado', 'marca_id', 'equipo_id', 'componente');
+        $this->reset('descripcion', 'observaciones', 'modelo', 'serie', 'cantidad', 'marca_id', 'equipo_id', 'componente');
         $this->isRegistrar = false;
         $this->isAgregar = false;
         $this->isExtraer = false;
@@ -87,34 +85,36 @@ new class extends Component {
 
     public function save()
     {
-        $this->observaciones = Str::of($this->observaciones)->trim();
-        $this->modelo = Str::of($this->modelo)->trim();
-        $this->serie = Str::of($this->serie)->trim();
-
         $this->validate([
-            'descripcion' => 'required|string|max:400',
-            'observaciones' => 'max:150',
+            'descripcion' => 'required',
+            'observaciones' => '',
             'modelo' => 'max:30',
             'serie' => 'max:50',
             'cantidad' => 'required|numeric|min:1',
-            'estado' => 'required|numeric|min:1|max:4',
-            'marca_id' => '',
-            'equipo_id' => '',
+            'marca_id' => 'numeric',
         ]);
 
-        Componente::updateOrCreate(
-            ['id' => $this->componente->id],
-            [
+        if (!$this->componente) {
+            Componente::create([
                 'descripcion' => $this->descripcion,
                 'observaciones' => $this->observaciones,
                 'modelo' => $this->modelo,
                 'serie' => $this->serie,
                 'cantidad' => $this->cantidad,
-                'estado' => $this->estado,
                 'marca_id' => $this->marca_id,
                 'equipo_id' => $this->equipo->id,
-            ],
-        );
+            ]);
+        } else {
+            $this->componente->update([
+                'descripcion' => $this->descripcion,
+                'observaciones' => $this->observaciones,
+                'modelo' => $this->modelo,
+                'serie' => $this->serie,
+                'cantidad' => $this->cantidad,
+                'marca_id' => $this->marca_id,
+                'equipo_id' => $this->equipo->id,
+            ]);
+        }
 
         $this->closeModal();
     }
@@ -154,12 +154,12 @@ new class extends Component {
     }
 
     //funciones para agregar componentes
-    public function addComponente($componenteId)
+    public function addComponente($id)
     {
-        $componente = $this->freeComponentes->find($componenteId);
+        $componente = $this->freeComponentes->find($id);
         if ($componente) {
             $this->selectedComponentes[] = $componente;
-            $this->freeComponentes = $this->freeComponentes->where('id', '!=', $componenteId);
+            $this->freeComponentes = $this->freeComponentes->where('id', '!=', $id);
         }
     }
 
@@ -261,7 +261,7 @@ new class extends Component {
                                 Serie
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                Estado
+                                Cantidad
                             </th>
                             <th scope="col" class="px-6 py-3">
                                 Acciones
@@ -282,9 +282,8 @@ new class extends Component {
                                 <td class="px-6 py-4">
                                     {{ $item->serie }}
                                 </td>
-                                <td
-                                    class="px-6 py-4 {{ 'text-' . config('constants.colores')[$item->estado] . '-600' }}">
-                                    {{ config('constants.estados')[$item->estado] }}
+                                <td class="px-6 py-4">
+                                    {{ $item->cantidad }}
                                 </td>
                                 <td class="px-6 py-4 flex gap-4">
                                     <button wire:click="view({{ $item->id }})"
@@ -321,7 +320,7 @@ new class extends Component {
     @endif
 
     @if ($isAgregar)
-        <x-modal-show title="Agregar componentes" width="2xl">
+        <x-modal-show title="Agregar componentes" width="xl">
             <form wire:submit="saveComponents">
                 <div class="grid grid-cols-1 gap-2">
                     <div>
@@ -397,7 +396,7 @@ new class extends Component {
     @endif
 
     @if ($isExtraer)
-        <x-modal-show title="Extraer componentes" width="2xl">
+        <x-modal-show title="Extraer componentes" width="xl">
             <form wire:submit="destroyComponents">
                 <div class="grid grid-cols-1 gap-2">
                     <div>

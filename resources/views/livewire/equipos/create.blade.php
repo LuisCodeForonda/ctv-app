@@ -22,13 +22,6 @@ new #[Layout('layouts.app')] class extends Component {
 
     public function save()
     {
-        $this->descripcion = Str::of($this->descripcion)->trim();
-        $this->observaciones = Str::of($this->observaciones)->trim();
-        $this->modelo = Str::of($this->modelo)->trim();
-        $this->serie = Str::of($this->serie)->trim();
-        $this->serietec = Str::of($this->serietec)->trim();
-        $this->area = Str::of($this->area)->trim();
-        $this->ubicacion = Str::of($this->ubicacion)->trim();
 
         $this->validate([
             'descripcion' => 'required|min:3|max:400',
@@ -75,7 +68,7 @@ new #[Layout('layouts.app')] class extends Component {
     @endslot
 
     <h1 class="text-center">Formulario</h1>
-    <x-layout-form width="2xl">
+    <x-layout-form width="xl">
         @include('forms.equipo-form')
 
         <div class="flex justify-end gap-2">

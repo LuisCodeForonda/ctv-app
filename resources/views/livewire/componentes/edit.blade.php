@@ -33,10 +33,6 @@ new #[Layout('layouts.app')] class extends Component {
 
     public function save()
     {
-        $this->descripcion = Str::of($this->descripcion)->trim();
-        $this->observaciones = Str::of($this->observaciones)->trim();
-        $this->modelo = Str::of($this->modelo)->trim();
-        $this->serie = Str::of($this->serie)->trim();
 
         $this->validate([
             'descripcion' => 'required|min:3|max:400',

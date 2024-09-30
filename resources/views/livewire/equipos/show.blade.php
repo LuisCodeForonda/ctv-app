@@ -45,7 +45,7 @@ new #[Layout('layouts.app')] class extends Component {
                 <div class="grid grid-cols-4 gap-2">
                     <div class="flex">
                         <h2 class="font-bold mr-2">Marca:</h2>
-                        <p>{{ $equipo->marca->nombre }}</p>
+                        <p>{{ $equipo->marca->nombre ?? '' }}</p>
                     </div>
                     <div class="flex">
                         <h2 class="font-bold mr-2">Modelo:</h2>

@@ -11,7 +11,7 @@ new #[Layout('layouts.app')] class extends Component {
 
     public function save()
     {
-        $this->nombre = Str::of($this->nombre)->trim();
+        $this->nombre = Str::lower($this->nombre);
 
         $this->validate([
             'nombre' => 'required|min:2|max:30|unique:marcas'

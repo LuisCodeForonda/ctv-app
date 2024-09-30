@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('equipos', function (Blueprint $table) {
             $table->id();
-            $table->longText('descripcion', 400);
-            $table->string('observaciones', 200)->nullable();
+            $table->longText('descripcion');
+            $table->longText('observaciones')->nullable();
             $table->string('modelo', 30)->nullable();
             $table->string('serie', 30)->nullable();
             $table->string('serietec')->unique();
@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string('area', 30)->nullable();
             $table->string('ubicacion', 50)->nullable();
             $table->string('slug', 50)->unique();
-            $table->foreignId('responsable_id')->nullable()->constrained('responsables')->cascadeOnUpdate()->nullOnDelete();
-            $table->foreignId('marca_id')->nullable()->constrained('marcas')->cascadeOnUpdate()->nullOnDelete();
+            $table->foreignId('responsable_id')->default(null)->nullable()->constrained('responsables')->cascadeOnUpdate()->nullOnDelete();
+            $table->foreignId('marca_id')->default(null)->nullable()->constrained('marcas')->cascadeOnUpdate()->nullOnDelete();
             $table->timestamps();
         });
     }

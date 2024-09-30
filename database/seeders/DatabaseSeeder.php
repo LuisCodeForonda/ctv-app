@@ -88,8 +88,8 @@ class DatabaseSeeder extends Seeder
 
         \App\Models\User::create([
             'name' => 'luis Foronda',
-            'email' => 'root@gmail.com',
-            'password' => Hash::make('ctvAdminCode'),
+            'email' => 'luis@gmail.com',
+            'password' => Hash::make('12345678'),
             'enabled' => true,
         ])->assignRole('admin');
 

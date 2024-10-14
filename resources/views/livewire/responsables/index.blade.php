@@ -241,9 +241,9 @@ new #[Layout('layouts.app')] class extends Component {
             @endif
 
             <strong>Creado</strong>
-            <p>{{ $responsable->created_at }}</p>
+            <p>{{ $responsable->created_at->format('d/m/Y') }}</p>
             <strong>Actualizado</strong>
-            <p>{{ $responsable->updated_at }}</p>
+            <p>{{ $responsable->updated_at->format('d/m/Y') }}</p>
         </x-modal-show>
     @endif
 

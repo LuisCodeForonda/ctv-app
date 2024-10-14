@@ -12,7 +12,7 @@ new #[Layout('layouts.app')] class extends Component {
     public function save()
     {
         $this->validate([
-            'nombre' => 'required|min:3|max:30|unique:marcas'
+            'nombre' => 'required|min:3|max:30|unique:categorias'
         ]);
 
         Categoria::create([
@@ -28,8 +28,7 @@ new #[Layout('layouts.app')] class extends Component {
         <h1 class="font-bold">Categorias > create</h1>
     @endslot
 
-    <h1 class="text-center">Formulario</h1>
-    <x-layout-form>
+    <x-layout-form title="Crear categoria">
         @include('forms.categoria-form')
 
         <div class="flex justify-end gap-2">

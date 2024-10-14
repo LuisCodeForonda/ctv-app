@@ -82,7 +82,7 @@ new class extends Component {
         Storage::delete($archivo->file);
         $archivo->delete();
         session()->flash('message', 'Eliminado Exitosamente.');
-        $this->closeConfimModal();
+        $this->closeModal();
     }
 
     public function download($archivo, $name)
@@ -112,22 +112,57 @@ new class extends Component {
         @else
             <x-primary-button wire:click="openModal">Nuevo</x-primary-button>
 
-            <ul class="grid grid-cols-4 gap-2 mt-2">
-                @foreach ($data as $item)
-                    <li wire:key={{ $item->id }}
-                        class="relative h-32 border-2 shadow-md p-2 rounded-md flex flex-col justify-between items-center ">
-                        <a href="{{ Storage::url($item->file) }}"
-                            class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{ $item->nombre }}</a>
-                        <span class="text-4xl">{{ $item->extension }}</span>
-                        <div class="flex gap-2">
-                            <button type="button"
-                                wire:click="download('{{ $item->file }}', '{{ $item->nombre }}')" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">descargar</button>
-                            <button type="button" wire:click="destroy({{ $item->id }})" class="font-medium text-red-600 dark:text-red-500 hover:underline">eliminar</button>
-                        </div>
-
-                    </li>
-                @endforeach
-            </ul>
+            <div class="relative overflow-x-auto mt-2">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">
+                                Nombre
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Extención
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Fecha
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Acciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($data as $item)
+                            <tr wire:key="{{ $item->id }}"
+                                class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                <th scope="row"
+                                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {{ $item->nombre }}
+                                </th>
+                                <td class="px-6 py-4">
+                                    {{ $item->extension }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{ $item->created_at->format('d/m/Y') }}
+                                </td>
+                                <td class="px-6 py-4 flex gap-4">
+                                    <button type="button"
+                                        wire:click="download('{{ $item->file }}', '{{ $item->nombre }}')">
+                                        <img src="{{ asset('icons/download.svg') }}" alt="icono descarga">
+                                    </button>
+                                    <button type="button" wire:click="destroy({{ $item->id }})">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
+                                            class="size-6">
+                                            <path fill-rule="evenodd"
+                                                d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         @endif
     </div>
 
@@ -145,7 +180,7 @@ new class extends Component {
 
     @if ($showDeleteModal)
         <x-modal-destroy-confirm>
-            {{ $archivo->nombre }}
+            <p class="mb-4">{{ $archivo->nombre }}</p>
         </x-modal-destroy-confirm>
     @endif
 

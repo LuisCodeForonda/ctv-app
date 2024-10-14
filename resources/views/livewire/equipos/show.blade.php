@@ -28,7 +28,7 @@ new #[Layout('layouts.app')] class extends Component {
         <h1 class="font-bold"><a href="{{ route('equipos.index') }}" wire:navigate>Equipos</a> > informacion > {{ $equipo->slug }}</h1>
     @endslot
 
-    <div class="p-2 bg-gray-800 rounded-md">
+    <div class="p-2 dark:bg-gray-800 rounded-md">
         <div class="grid grid-cols-3 gap-2 py-2">
             <div class="col-span-2 space-y-2">
                 <div class="grid grid-cols-2 gap-2">

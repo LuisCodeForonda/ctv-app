@@ -36,12 +36,9 @@ new #[Layout('layouts.app')] class extends Component {
         <h1 class="font-bold">Roles > create</h1>
     @endslot
 
-    <h1 class="text-center">Formulario</h1>
-    <x-layout-form width="xl">
+    <x-layout-form title="Crear rol">
         @include('forms.rol-form')
-
         <div class="flex justify-end gap-2">
-
             <x-secondary-button href="{{ route('roles.index') }}" wire:navigate>Cancelar</x-secondary-button>
             <x-primary-button>Guardar</x-primary-button>
         </div>

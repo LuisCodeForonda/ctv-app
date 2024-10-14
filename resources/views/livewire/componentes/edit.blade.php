@@ -69,8 +69,7 @@ new #[Layout('layouts.app')] class extends Component {
         <h1 class="font-bold">Componentes > edit</h1>
     @endslot
 
-    <h1 class="text-center">Formulario</h1>
-    <x-layout-form>
+    <x-layout-form title="Editar componente">
         @include('forms.componente-form')
 
         <div class="flex justify-end gap-2">

@@ -1,4 +1,4 @@
-<div class="grid gap-4 mb-4">
+<div class="grid grid-cols-1 gap-4">
     <div>
         <label for="name"
             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
@@ -14,7 +14,7 @@
             class="block mb-2 text-base font-medium text-gray-900 dark:text-white">Seleccionar
             permisos</label>
 
-        <div class="grid grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             @foreach ($permisos as $category => $perms)
                 {{-- iteramos por cada categoria --}}
                 @if (count($perms) > 0)

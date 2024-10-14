@@ -184,10 +184,10 @@ new #[Layout('layouts.app')] class extends Component {
                                 {{ $item->nombre }}
                             </th>
                             <td class="px-6 py-4">
-                                {{ $item->created_at }}
+                                {{ $item->created_at->format('d/m/Y') }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ $item->updated_at }}
+                                {{ $item->updated_at->format('d/m/Y') }}
                             </td>
                             <td class="px-6 py-4 flex gap-4">
                                 <button wire:click="view({{ $item->id }})"

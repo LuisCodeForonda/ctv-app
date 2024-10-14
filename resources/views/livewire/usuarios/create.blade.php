@@ -49,16 +49,12 @@ new #[Layout('layouts.app')] class extends Component {
     @slot('header')
         <h1 class="font-bold">Usuarios > create</h1>
     @endslot
-
-    <h1 class="text-center">Formulario</h1>
-    <x-layout-form>
+    <x-layout-form title="Crear usuario">
         @include('forms.user-form')
 
         <div class="flex justify-end gap-2">
-            
             <x-secondary-button href="{{ route('usuarios.index') }}" wire:navigate>Cancelar</x-secondary-button>
             <x-primary-button>Guardar</x-primary-button>
         </div>
     </x-layout-form>
-    
 </div>

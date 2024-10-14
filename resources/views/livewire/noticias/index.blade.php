@@ -161,15 +161,12 @@ new #[Layout('layouts.app')] class extends Component {
                         ])
                         @include('includes.table-sortable', [
                             'name' => 'status',
-                            'displayName' => 'Publicado',
+                            'displayName' => 'Estado',
                         ])
+                        <th>Portada</th>
                         @include('includes.table-sortable', [
                             'name' => 'created_at',
                             'displayName' => 'Fecha creacion',
-                        ])
-                        @include('includes.table-sortable', [
-                            'name' => 'updated_at',
-                            'displayName' => 'Fecha edicion',
                         ])
                         <th scope="col" class="px-6 py-3">
                             Acciones
@@ -189,14 +186,14 @@ new #[Layout('layouts.app')] class extends Component {
                                 {{ $item->user->name }}
                             </th>
                             <th scope="row"
-                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ $item->status }}
+                                class="px-6 py-4 font-medium {{$item->status===1? 'text-green-400':'text-yellow-400'}} whitespace-nowrap dark:text-white">
+                                {{ config('constants.noticia')[$item->status] }}
                             </th>
                             <td class="px-6 py-4">
-                                {{ $item->created_at }}
+                                <img src="{{ url('storage/'.$item->image) }}" alt="" srcset="" class="w-10 h-10">
                             </td>
                             <td class="px-6 py-4">
-                                {{ $item->updated_at }}
+                                {{ $item->created_at->format('d/m/Y') }}
                             </td>
                             <td class="px-6 py-4 flex gap-4">
                                 <button wire:click="view({{ $item->id }})"
@@ -229,9 +226,9 @@ new #[Layout('layouts.app')] class extends Component {
             <strong>Nombre</strong>
             <p>{{ $noticia->titulo }}</p>
             <strong>Creado</strong>
-            <p>{{ $noticia->created_at }}</p>
+            <p>{{ $noticia->created_at->format('d/m/Y') }}</p>
             <strong>Actulizado</strong>
-            <p>{{ $noticia->updated_at }}</p>
+            <p>{{ $noticia->updated_at->format('d/m/Y') }}</p>
         </x-modal-show>
     @endif
 

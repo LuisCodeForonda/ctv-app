@@ -21,7 +21,7 @@
                 id="image" name="image" wire:model="image" type="file">
             <x-input-error :messages="$errors->get('image')" />
         </div>
-    
+
         <div wire:loading wire:target="image">
             <div role="status">
                 <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
@@ -38,7 +38,7 @@
         </div>
 
         @if ($image)
-            <div class="w-full flex justify-center">
+            <div class="w-full flex justify-center mt-4">
                 <img src="{{ $image->temporaryUrl() }}" class="w-48 h-36 object-cover">
             </div>
         @endif
@@ -59,11 +59,16 @@
             <x-input-error :messages="$errors->get('categoria_id')" class="mt-2" />
         </div>
 
-        <div class="flex items-center mt-2">
-            <input id="checked-checkbox" name="enabled" wire:model="status" type="checkbox"
-                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-            <label for="checked-checkbox"
-                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Publicar</label>
+        <div>
+            <label for="categoria_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Publicar
+                noticia</label>
+            <label class="inline-flex items-center cursor-pointer mt-2">
+                <input type="checkbox" wire:model="status" value="" class="sr-only peer">
+                <div
+                    class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                </div>
+                <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Publicar</span>
+            </label>
         </div>
 
 

@@ -19,9 +19,9 @@ new class extends Component {
     public $componente;
 
     //variables
-    public $componentes = [];
-    public $freeComponentes = [];
-    public $selectedComponentes = [];
+    public $componentes;
+    public $freeComponentes;
+    public $selectedComponentes;
     public $filter = '';
 
     //variables de los modales
@@ -41,13 +41,19 @@ new class extends Component {
 
     public function actualizarDatos()
     {
-        $this->componentes = Componente::where('equipo_id', $this->equipo->id)
-            ->latest()
-            ->get();
+        $this->componentes = collect(
+            Componente::where('equipo_id', $this->equipo->id)
+                ->latest()
+                ->get(),
+        );
 
-        $this->freeComponentes = Componente::whereNull('equipo_id')
-            ->where('descripcion', 'LIKE', '%' . $this->filter . '%')
-            ->get();
+        $this->freeComponentes = collect(
+            Componente::whereNull('equipo_id')
+                ->where('descripcion', 'LIKE', '%' . $this->filter . '%')
+                ->get(),
+        );
+
+        $this->selectedComponentes = collect([]);
     }
 
     //funciones
@@ -62,23 +68,20 @@ new class extends Component {
                 break;
             case 'extraer':
                 $this->isExtraer = true;
-
-            default:
-                # code...
-                break;
         }
     }
 
     public function closeModal()
     {
         $this->resetValidation();
-        $this->reset('selectedComponentes');
+        $this->selectedComponentes = collect([]);
         $this->reset('descripcion', 'observaciones', 'modelo', 'serie', 'cantidad', 'marca_id', 'equipo_id', 'componente');
         $this->isRegistrar = false;
         $this->isAgregar = false;
         $this->isExtraer = false;
         $this->show = false;
         $this->showDelete = false;
+        $this->actualizarDatos();
     }
 
     //funcion para registrar un nuevo componente
@@ -153,69 +156,55 @@ new class extends Component {
         $this->showDelete = false;
     }
 
-    //funciones para agregar componentes
+    //funciones para agregar componentes a la lista temporal de eliminado
     public function addComponente($id)
     {
-        $componente = $this->freeComponentes->find($id);
-        if ($componente) {
-            $this->selectedComponentes[] = $componente;
-            $this->freeComponentes = $this->freeComponentes->where('id', '!=', $id);
+        if($this->isAgregar){
+            $componente = $this->freeComponentes->where('id', $id)->first();
+            if($componente){
+                $this->selectedComponentes = $this->selectedComponentes->push($componente);
+                $this->freeComponentes = $this->freeComponentes->where('id', '!=', $id);
+            }
+        }else{
+            $componente = $this->componentes->where('id', $id)->first();
+            if($componente){
+                $this->selectedComponentes = $this->selectedComponentes->push($componente);
+                $this->componentes = $this->componentes->where('id', '!=', $id);
+            }
         }
     }
 
-    public function removeComponente($componenteId)
+    //funcion para eliminar los componentes de la lista temporal
+    public function removeComponente($id)
     {
-        $componente = collect($this->selectedComponentes)
-            ->where('id', $componenteId)
-            ->first();
+        $componente = $this->selectedComponentes->where('id', $id)->first();
         if ($componente) {
-            $this->componentes[] = $componente;
-            $this->selectedComponentes = collect($this->selectedComponentes)
-                ->where('id', '!=', $componente->id)
-                ->values();
+            $this->selectedComponentes = $this->selectedComponentes->where('id', '!=', $id);
+            if($this->isAgregar){
+                $this->freeComponentes = $this->freeComponentes->push($componente);
+            }else{
+                $this->componentes = $this->componentes->push($componente);
+            }
+            
         }
     }
 
+    //funcion encargada de guardar los cambios de las tablas
     public function saveComponents()
     {
         foreach ($this->selectedComponentes as $componente) {
-            $componente->update(['equipo_id' => $this->equipo->id]);
+            if($this->isAgregar){
+                $componente->update(['equipo_id' => $this->equipo->id]);
+            }else{
+                $componente->update(['equipo_id' => null]);
+            }
+            
         }
         $this->closeModal();
         $this->actualizarDatos();
     }
 
-    //fuciones para extraer componentes
-    public function extractComponente($componenteId)
-    {
-        $componente = $this->componentes->find($componenteId);
-        if ($componente) {
-            $this->selectedComponentes[] = $componente;
-            $this->componentes = $this->componentes->where('id', '!=', $componenteId);
-        }
-    }
-
-    public function cancelComponente($componenteId)
-    {
-        $componente = collect($this->selectedComponentes)
-            ->where('id', $componenteId)
-            ->first();
-        if ($componente) {
-            $this->componentes[] = $componente;
-            $this->selectedComponentes = collect($this->selectedComponentes)
-                ->where('id', '!=', $componente->id)
-                ->values();
-        }
-    }
-
-    public function destroyComponents()
-    {
-        foreach ($this->selectedComponentes as $componente) {
-            $componente->update(['equipo_id' => null]);
-        }
-        $this->closeModal();
-        $this->actualizarDatos();
-    }
+    
 
     public function with()
     {
@@ -301,7 +290,6 @@ new class extends Component {
                             </tr>
                         @endforeach
                     </tbody>
-
                 </table>
             </div>
         @endif
@@ -325,64 +313,52 @@ new class extends Component {
                 <div class="grid grid-cols-1 gap-2">
                     <div>
                         <label for="descripcion"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Manifiesto</label>
-                        <textarea id="descripcion" wire:model="descripcion" name="descripcion" rows="4"
-                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Write your thoughts here..."></textarea>
-                        <x-input-error :messages="$errors->get('descripcion')" class="mt-2" />
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Agregar</label>
+                        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mb-2">
+                            <tbody>
+                                @foreach ($selectedComponentes as $item)
+                                    <tr wire:key="{{ $item->id }}"
+                                        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                        <th scope="row"
+                                            class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            {{ $item->descripcion }}
+                                        </th>
+                                        <td class="py-2 ">
+                                            {{ $item->serie }}
+                                        </td>
+                                        <td class="py-2 ">
+                                            <button wire:click.prevent="removeComponente({{ $item->id }})"
+                                                class="font-medium text-red-600 dark:text-red-500 hover:underline">Quitar</button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label for="descripcion"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Agregar</label>
-                            <table
-                                class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mb-2">
-                                <tbody>
-                                    @foreach ($selectedComponentes as $item)
-                                        <tr wire:key="{{ $item->id }}"
-                                            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                            <th scope="row"
-                                                class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ $item->descripcion }}
-                                            </th>
-                                            <td class="py-2 ">
-                                                {{ $item->serie }}
-                                            </td>
-                                            <td class="py-2 ">
-                                                <button wire:click.prevent="removeComponente({{ $item->id }})"
-                                                    class="font-medium text-red-600 dark:text-red-500 hover:underline">Quitar</button>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
 
-                        <div>
-                            <label for="descripcion"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Disponibles</label>
-                            <table
-                                class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mb-2">
-                                <tbody>
-                                    @foreach ($freeComponentes as $item)
-                                        <tr wire:key="{{ $item->id }}"
-                                            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                            <th scope="row"
-                                                class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ $item->descripcion }}
-                                            </th>
-                                            <td class="py-2">
-                                                {{ $item->serie }}
-                                            </td>
-                                            <td class="py-2">
-                                                <button wire:click.prevent="addComponente({{ $item->id }})"
-                                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Instalar</button>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                    <div>
+                        <label for="descripcion"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Disponibles</label>
+                        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mb-2">
+                            <tbody>
+                                @foreach ($freeComponentes as $item)
+                                    <tr wire:key="{{ $item->id }}"
+                                        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                        <th scope="row"
+                                            class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            {{ $item->descripcion }}
+                                        </th>
+                                        <td class="py-2">
+                                            {{ $item->serie }}
+                                        </td>
+                                        <td class="py-2">
+                                            <button wire:click.prevent="addComponente({{ $item->id }})"
+                                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Instalar</button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -397,71 +373,60 @@ new class extends Component {
 
     @if ($isExtraer)
         <x-modal-show title="Extraer componentes" width="xl">
-            <form wire:submit="destroyComponents">
+            <form wire:submit="saveComponents">
                 <div class="grid grid-cols-1 gap-2">
                     <div>
                         <label for="descripcion"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Manifiesto</label>
-                        <textarea id="descripcion" wire:model="descripcion" name="descripcion" rows="4"
-                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Write your thoughts here..."></textarea>
-                        <x-input-error :messages="$errors->get('descripcion')" class="mt-2" />
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Instalados</label>
+                        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mb-2">
+                            <tbody>
+                                @foreach ($componentes as $item)
+                                    <tr wire:key="{{ $item->id }}"
+                                        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                        <th scope="row"
+                                            class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            {{ $item->descripcion }}
+                                        </th>
+                                        <td class="py-2 ">
+                                            {{ $item->serie }}
+                                        </td>
+                                        <td class="py-2 ">
+                                            <button wire:click.prevent="addComponente({{ $item->id }})"
+                                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Quitar</button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label for="descripcion"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Instalados</label>
-                            <table
-                                class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mb-2">
-                                <tbody>
-                                    @foreach ($componentes as $item)
-                                        <tr wire:key="{{ $item->id }}"
-                                            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                            <th scope="row"
-                                                class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ $item->descripcion }}
-                                            </th>
-                                            <td class="py-2 ">
-                                                {{ $item->serie }}
-                                            </td>
-                                            <td class="py-2 ">
-                                                <button wire:click.prevent="extractComponente({{ $item->id }})"
-                                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Quitar</button>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
 
-                        <div>
-                            <label for="descripcion"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Extraer</label>
-                            <table
-                                class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mb-2">
-                                <tbody>
+                    <div>
+                        <label for="descripcion"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Extraer</label>
+                        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mb-2">
+                            <tbody>
 
-                                    @foreach ($selectedComponentes as $item)
-                                        <tr wire:key="{{ $item->id }}"
-                                            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                            <th scope="row"
-                                                class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ $item->descripcion }}
-                                            </th>
-                                            <td class="py-2 ">
-                                                {{ $item->serie }}
-                                            </td>
-                                            <td class="py-2 ">
-                                                <button wire:click.prevent="cancelComponente({{ $item->id }})"
-                                                    class="font-medium text-red-600 dark:text-red-500 hover:underline">Cancelar</button>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                                @foreach ($selectedComponentes as $item)
+                                    <tr wire:key="{{ $item->id }}"
+                                        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                        <th scope="row"
+                                            class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            {{ $item->descripcion }}
+                                        </th>
+                                        <td class="py-2 ">
+                                            {{ $item->serie }}
+                                        </td>
+                                        <td class="py-2 ">
+                                            <button wire:click.prevent="removeComponente({{ $item->id }})"
+                                                class="font-medium text-red-600 dark:text-red-500 hover:underline">Cancelar</button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
+
 
                 <div class="flex justify-end gap-2">
                     <x-secondary-button wire:click="closeModal">Cancelar</x-secondary-button>

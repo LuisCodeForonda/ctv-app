@@ -1,4 +1,4 @@
-<div class="grid grid-cols-2 gap-4 mb-4">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
     <div>
         <label for="descripcion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Descripcion</label>
         <textarea id="descripcion" wire:model="descripcion" name="descripcion" rows="4"

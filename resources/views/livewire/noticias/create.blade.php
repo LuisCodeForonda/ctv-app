@@ -31,7 +31,7 @@ new #[Layout('layouts.app')] class extends Component {
     {
         $this->validate();
 
-        $this->image = $this->image->store(path: 'uploads');
+        $this->image = $this->image->store(path: 'public/uploads/');
 
         Noticia::create([
             'titulo' => $this->titulo,
@@ -58,8 +58,7 @@ new #[Layout('layouts.app')] class extends Component {
         <h1 class="font-bold">Noticias > create</h1>
     @endslot
 
-    <h1 class="text-center">Formulario</h1>
-    <x-layout-form width="xl">
+    <x-layout-form title="Crear noticia">
         @include('forms.noticia-form')
 
         <div class="flex justify-end gap-2">

@@ -24,6 +24,11 @@ return [
     'cuenta' => [
         0 => 'Deshabilitada',
         1 => 'Habilitada',
+    ],
+
+    'noticia' => [
+        0 => 'Pendiente',
+        1 => 'Publicado'
     ]
    
 ];

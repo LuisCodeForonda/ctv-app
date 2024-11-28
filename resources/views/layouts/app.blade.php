@@ -148,6 +148,14 @@
                                 </a>
                             </li>
                         @endcan
+                        @can('equipo')
+                            <li class="border-l-2">
+                                <a href="{{ route('asignaciones.index') }}" wire:navigate class="cursor-pointer ">
+                                    <span
+                                        class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('asignaciones.index') ? 'text-white bg-slate-300/30' : '' }}">Asignaciones</span>
+                                </a>
+                            </li>
+                        @endcan
                     </ul>
                 </li>
 

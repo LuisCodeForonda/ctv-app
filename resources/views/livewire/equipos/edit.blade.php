@@ -5,7 +5,7 @@ use Livewire\Attributes\Layout;
 use Illuminate\Support\Str;
 use App\Models\Equipo;
 use App\Models\Marca;
-use App\Models\Responsable;
+use App\Models\Categoria;
 
 new #[Layout('layouts.app')] class extends Component {
     //objeto
@@ -21,7 +21,7 @@ new #[Layout('layouts.app')] class extends Component {
     public $area;
     public $ubicacion;
     public $marca_id;
-    public $responsable_id;
+    public $categoria_id;
 
     public function mount(Equipo $equipo)
     {
@@ -35,7 +35,7 @@ new #[Layout('layouts.app')] class extends Component {
         $this->area = $equipo->area;
         $this->ubicacion = $equipo->ubicacion;
         $this->marca_id = $equipo->marca_id;
-        $this->responsable_id = $equipo->responsable_id;
+        $this->categoria_id = $equipo->categoria_id;
     }
 
     public function save()
@@ -44,13 +44,11 @@ new #[Layout('layouts.app')] class extends Component {
         $this->validate([
             'descripcion' => 'required|min:3|max:400',
             'observaciones' => 'max:150',
-            'modelo' => 'max:30',
+            'modelo' => 'required|max:30',
             'serie' => 'max:50',
             'estado' => 'required|numeric|min:1|max:4',
-            'area' => '',
-            'ubicacion' => '',
-            'marca_id' => '',
-            'responsable_id' => '',
+            'area' => 'required|max:30',
+            'ubicacion' => 'max:50',
         ]);
 
         $this->equipo->update([
@@ -62,7 +60,7 @@ new #[Layout('layouts.app')] class extends Component {
             'area' => $this->area,
             'ubicacion' => $this->ubicacion,
             'marca_id' => $this->marca_id,
-            'responsable_id' => $this->responsable_id,
+            'categoria_id' => $this->categoria_id,
         ]);
 
         return $this->redirect('/equipos', navigate: true);
@@ -72,7 +70,7 @@ new #[Layout('layouts.app')] class extends Component {
     {
         return [
             'marcas' => Marca::all(),
-            'responsables' => Responsable::all(),
+            'categorias' => Categoria::all(),
         ];
     }
 }; ?>

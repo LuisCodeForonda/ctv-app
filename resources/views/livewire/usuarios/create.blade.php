@@ -17,6 +17,12 @@ new #[Layout('layouts.app')] class extends Component {
     public $password_confirmation;
     public $rol;
 
+    public $nombre;
+    public $direccion;
+    public $cargo;
+    public $carnet;
+    public $celular;
+
     public function save()
     {
 
@@ -25,14 +31,27 @@ new #[Layout('layouts.app')] class extends Component {
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'password_confirmation' => ['required_with:password|same:password'],
+            'nombre' => ['required', 'string', 'max:50'],
+            'direccion' => ['required', 'string', 'max:50'],
+            'cargo' => ['required', 'string', 'max:30'],
+            'carnet' => ['required', 'numeric'],
+            'celular' => ['required', 'numeric'],
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $this->name,
             'email' => $this->email,
             'password' => Hash::make($this->password),
             'enabled' => $this->enabled,
             'rol' => $this->rol,
+        ]);
+
+        $user->perfil()->create([
+            'nombre' => $this->nombre,
+            'direccion' => $this->direccion,
+            'cargo' => $this->cargo,
+            'carnet' => $this->carnet,
+            'celular' => $this->celular,
         ]);
 
         return $this->redirect('/usuarios', navigate: true);

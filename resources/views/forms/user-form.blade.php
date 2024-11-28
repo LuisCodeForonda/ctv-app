@@ -1,10 +1,12 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+
     <div>
-        <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
+        <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre (alias)</label>
         <input type="text" name="name" wire:model="name" id="name"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
         <x-input-error :messages="$errors->get('name')" class="mt-2" />
     </div>
+
     <div>
         <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Correo</label>
         <input type="text" name="email" wire:model="email" id="email"
@@ -31,6 +33,43 @@
         </div>
     @endif
 
+
+    <div>
+        <label for="nombre" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre completo</label>
+        <input type="text" name="nombre" wire:model="nombre" id="nombre"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+        <x-input-error :messages="$errors->get('nombre')" class="mt-2" />
+    </div>
+
+    <div>
+        <label for="direccion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Dirección</label>
+        <input type="text" name="direccion" wire:model="direccion" id="direccion"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+        <x-input-error :messages="$errors->get('direccion')" class="mt-2" />
+    </div>
+
+    <div>
+        <label for="cargo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Cargo</label>
+        <input type="text" name="cargo" wire:model="cargo" id="cargo"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+        <x-input-error :messages="$errors->get('cargo')" class="mt-2" />
+    </div>
+
+    <div>
+        <label for="carnet" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Carnet</label>
+        <input type="text" name="carnet" wire:model="carnet" id="carnet"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+        <x-input-error :messages="$errors->get('carnet')" class="mt-2" />
+    </div>
+
+    <div>
+        <label for="celular" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Celular</label>
+        <input type="text" name="celular" wire:model="celular" id="celular"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+        <x-input-error :messages="$errors->get('celular')" class="mt-2" />
+    </div>
+
+    
     <div class="grid grid-cols-2 gap-4">
         <div>
             <label for="rol" class="block text-sm font-medium text-gray-900 dark:text-white">Asignar un rol</label>
@@ -42,12 +81,6 @@
                 @endforeach
             </select>
         </div>
-        {{-- <div class="flex items-center justify-center">
-            <input id="checked-checkbox" name="enabled" wire:model="enabled" type="checkbox"
-                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-            <label for="checked-checkbox"
-                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Habilitado</label>
-        </div> --}}
 
         <div>
             <label for="checkbox" class="block text-sm font-medium text-gray-900 dark:text-white">Habilitar usuario</label>
@@ -59,7 +92,5 @@
                 <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Habilitado</span>
             </label>
         </div>
-        
-
     </div>
 </div>

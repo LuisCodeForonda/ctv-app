@@ -31,45 +31,14 @@ class DatabaseSeeder extends Seeder
 
         Permission::create(['name' => 'dahsboard.index', 'category' => 'dashboard'])->syncRoles([$role]);
 
-        Permission::create(['name' => 'user index', 'category' => 'Usuarios'])->syncRoles([$role]);
-        Permission::create(['name' => 'user create', 'category' => 'Usuarios'])->syncRoles([$role]);
-        Permission::create(['name' => 'user edit', 'category' => 'Usuarios'])->syncRoles([$role]);
-        Permission::create(['name' => 'user destroy', 'category' => 'Usuarios'])->syncRoles([$role]);
+        Permission::create(['name' => 'user', 'category' => 'Administracion'])->syncRoles([$role]);
+        Permission::create(['name' => 'rol', 'category' => 'Administracion'])->syncRoles([$role]);
 
-        Permission::create(['name' => 'rol index', 'category' => 'Rol'])->syncRoles([$role]);
-        Permission::create(['name' => 'rol create', 'category' => 'Rol'])->syncRoles([$role]);
-        Permission::create(['name' => 'rol edit', 'category' => 'Rol'])->syncRoles([$role]);
-        Permission::create(['name' => 'rol destroy', 'category' => 'Rol'])->syncRoles([$role]);
-
-        Permission::create(['name' => 'marca index', 'category' => 'Marca'])->syncRoles([$role]);
-        Permission::create(['name' => 'marca create', 'category' => 'Marca'])->syncRoles([$role]);
-        Permission::create(['name' => 'marca edit', 'category' => 'Marca'])->syncRoles([$role]);
-        Permission::create(['name' => 'marca destroy', 'category' => 'Marca'])->syncRoles([$role]);
-        Permission::create(['name' => 'marca export', 'category' => 'Marca'])->syncRoles([$role]);
-
-        Permission::create(['name' => 'responsable index', 'category' => 'Responsable'])->syncRoles([$role]);
-        Permission::create(['name' => 'responsable create', 'category' => 'Responsable'])->syncRoles([$role]);
-        Permission::create(['name' => 'responsable edit', 'category' => 'Responsable'])->syncRoles([$role]);
-        Permission::create(['name' => 'responsable destroy', 'category' => 'Responsable'])->syncRoles([$role]);
-        Permission::create(['name' => 'responsable export', 'category' => 'Responsable'])->syncRoles([$role]);
-
-        Permission::create(['name' => 'componente index', 'category' => 'Componente'])->syncRoles([$role]);
-        Permission::create(['name' => 'componente create', 'category' => 'Componente'])->syncRoles([$role]);
-        Permission::create(['name' => 'componente edit', 'category' => 'Componente'])->syncRoles([$role]);
-        Permission::create(['name' => 'componente destroy', 'category' => 'Componente'])->syncRoles([$role]);
-        Permission::create(['name' => 'componente export', 'category' => 'Componente'])->syncRoles([$role]);
-
-        Permission::create(['name' => 'equipo index', 'category' => 'Equipo'])->syncRoles([$role]);
-        Permission::create(['name' => 'equipo create', 'category' => 'Equipo'])->syncRoles([$role]);
-        Permission::create(['name' => 'equipo show', 'category' => 'Equipo'])->syncRoles([$role]);
-        Permission::create(['name' => 'equipo edit', 'category' => 'Equipo'])->syncRoles([$role]);
-        Permission::create(['name' => 'equipo destroy', 'category' => 'Equipo'])->syncRoles([$role]);
-        Permission::create(['name' => 'equipo export', 'category' => 'Equipo'])->syncRoles([$role]);
-        
-        Permission::create(['name' => 'categoria index', 'category' => 'Categoria'])->syncRoles([$role]);
-        Permission::create(['name' => 'categoria create', 'category' => 'Categoria'])->syncRoles([$role]);
-        Permission::create(['name' => 'categoria edit', 'category' => 'Categoria'])->syncRoles([$role]);
-        Permission::create(['name' => 'categoria destroy', 'category' => 'Categoria'])->syncRoles([$role]);
+        Permission::create(['name' => 'marca', 'category' => 'Equipos'])->syncRoles([$role]);
+        Permission::create(['name' => 'responsable', 'category' => 'Equipos'])->syncRoles([$role]);
+        Permission::create(['name' => 'componente', 'category' => 'Equipos'])->syncRoles([$role]);
+        Permission::create(['name' => 'equipo', 'category' => 'Equipos'])->syncRoles([$role]);
+        Permission::create(['name' => 'categoria', 'category' => 'Equipos'])->syncRoles([$role]);
 
         Permission::create(['name' => 'noticia index', 'category' => 'Noticia'])->syncRoles([$role]);
         Permission::create(['name' => 'noticia create', 'category' => 'Noticia'])->syncRoles([$role]);
@@ -79,12 +48,12 @@ class DatabaseSeeder extends Seeder
 
     
 
-        \App\Models\User::create([
-            'name' => 'Miguel Martinez',
-            'email' => 'miguel@gmail.com',
-            'password' => Hash::make('codeX439G'),
-            'enabled' => true,
-        ])->assignRole('admin');
+        // \App\Models\User::create([
+        //     'name' => 'Miguel Martinez',
+        //     'email' => 'miguel@gmail.com',
+        //     'password' => Hash::make('codeX439G'),
+        //     'enabled' => true,
+        // ])->assignRole('admin');
 
         \App\Models\User::create([
             'name' => 'luis Foronda',
@@ -92,6 +61,13 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('12345678'),
             'enabled' => true,
         ])->assignRole('admin');
+
+        \App\Models\User::create([
+            'name' => 'jose',
+            'email' => 'jose@gmail.com',
+            'password' => Hash::make('12345678'),
+            'enabled' => true,
+        ])->assignRole('editor');
 
         //Marca::factory(100)->create();
         //Responsable::factory(100)->create();

@@ -25,7 +25,8 @@ new #[Layout('layouts.app')] class extends Component {
 
 <div class="dark:text-slate-200">
     @slot('header')
-        <h1 class="font-bold"><a href="{{ route('equipos.index') }}" wire:navigate>Equipos</a> > informacion > {{ $equipo->slug }}</h1>
+        <h1 class="font-bold"><a href="{{ route('equipos.index') }}" wire:navigate>Equipos</a> > informacion >
+            {{ $equipo->slug }}</h1>
     @endslot
 
     <div class="p-2 dark:bg-gray-800 rounded-md">
@@ -41,7 +42,7 @@ new #[Layout('layouts.app')] class extends Component {
                         <p>{{ $equipo->observaciones }}</p>
                     </div>
                 </div>
-    
+
                 <div class="grid grid-cols-4 gap-2">
                     <div class="flex">
                         <h2 class="font-bold mr-2">Marca:</h2>
@@ -60,7 +61,7 @@ new #[Layout('layouts.app')] class extends Component {
                         <p>{{ $equipo->serietec }}</p>
                     </div>
                 </div>
-    
+
                 <div class="grid grid-cols-4 gap-2">
                     <div class="flex">
                         <h2 class="font-bold mr-2">Area:</h2>
@@ -77,7 +78,7 @@ new #[Layout('layouts.app')] class extends Component {
                         </p>
                     </div>
                 </div>
-    
+
                 @if ($equipo->responsable_id !== null)
                     <div class="grid grid-cols-4 gap-2">
                         <div class="flex">
@@ -98,22 +99,34 @@ new #[Layout('layouts.app')] class extends Component {
                         </div>
                     </div>
                 @endif
-    
+
             </div>
             <div class="flex flex-col items-center gap-2">
                 <h2 class="font-bold text-xl">Codigo QR</h2>
-                <div>
+                <div id="container">
                     {!! $qrcode !!}
                 </div>
-                <x-primary-button>Descargar QR</x-primary-button>
+                <x-primary-button onclick="downloadSVG()">Descargar QR</x-primary-button>
             </div>
         </div>
     </div>
-   
+
 
     <livewire:componentes.equipo-componente :equipo="$equipo" />
 
     <livewire:archivos.equipo-componente :equipo="$equipo" />
 
     <livewire:mantenimientos.equipo-componente :equipo="$equipo" />
+
+    <script>
+        function downloadSVG() {
+            const svg = document.getElementById('container').innerHTML;
+            const blob = new Blob([svg.toString()]);
+            const element = document.createElement("a");
+            element.download = "w3c.svg";
+            element.href = window.URL.createObjectURL(blob);
+            element.click();
+            element.remove();
+        }
+    </script>
 </div>

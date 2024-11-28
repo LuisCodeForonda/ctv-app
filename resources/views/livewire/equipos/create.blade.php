@@ -5,7 +5,7 @@ use Livewire\Attributes\Layout;
 use Illuminate\Support\Str;
 use App\Models\Equipo;
 use App\Models\Marca;
-use App\Models\Responsable;
+use App\Models\Categoria;
 
 new #[Layout('layouts.app')] class extends Component {
     //variables del modelo
@@ -18,7 +18,7 @@ new #[Layout('layouts.app')] class extends Component {
     public $area;
     public $ubicacion;
     public $marca_id;
-    public $responsable_id;
+    public $categoria_id;
 
     public function save()
     {
@@ -26,14 +26,12 @@ new #[Layout('layouts.app')] class extends Component {
         $this->validate([
             'descripcion' => 'required|min:3|max:400',
             'observaciones' => 'max:150',
-            'modelo' => 'max:30',
+            'modelo' => 'required|max:30',
             'serie' => 'max:50',
             'serietec' => 'required|max:50|unique:equipos',
             'estado' => 'required|numeric|min:1|max:4',
-            'area' => 'max:30',
+            'area' => 'required|max:30',
             'ubicacion' => 'max:50',
-            'marca_id' => '',
-            'responsable_id' => '',
         ]);
 
         Equipo::create([
@@ -47,7 +45,7 @@ new #[Layout('layouts.app')] class extends Component {
             'ubicacion' => $this->ubicacion,
             'slug' => Str::slug($this->serietec, '-'),
             'marca_id' => $this->marca_id,
-            'responsable_id' => $this->responsable_id,
+            'categoria_id' => $this->categoria_id,
         ]);
 
         return $this->redirect('/equipos', navigate: true);
@@ -57,7 +55,7 @@ new #[Layout('layouts.app')] class extends Component {
     {
         return [
             'marcas' => Marca::all(),
-            'responsables' => Responsable::all(),
+            'categorias' => Categoria::all(),
         ];
     }
 }; ?>

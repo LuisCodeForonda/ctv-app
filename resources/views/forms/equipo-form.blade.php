@@ -70,13 +70,12 @@
         </select>
     </div>
     <div>
-        <label for="responsable_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">A cargo
-            de:</label>
-        <select id="responsable_id" wire:model="responsable_id" name="responsable_id"
+        <label for="categoria_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Categoria:</label>
+        <select id="categoria_id" wire:model="categoria_id" name="categoria_id"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
             <option value="">Selecciona</option>
-            @foreach ($responsables as $responsable)
-                <option value="{{ $responsable->id }}" @selected($responsable_id == $responsable->id)>{{ $responsable->nombre }}
+            @foreach ($categorias as $categoria)
+                <option value="{{ $categoria->id }}" @selected($categoria_id == $categoria->id)>{{ $categoria->nombre }}
                 </option>
             @endforeach
         </select>

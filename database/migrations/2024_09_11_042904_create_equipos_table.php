@@ -20,13 +20,14 @@ return new class extends Migration
             $table->string('serietec')->unique();
             $table->tinyInteger('estado')->default(1);
             $table->string('area', 30)->nullable();
-            $table->string('ubicacion', 50)->nullable();
             $table->string('slug', 50)->unique();
-            $table->foreignId('responsable_id')->default(null)->nullable()->constrained('responsables')->cascadeOnUpdate()->nullOnDelete();
-            $table->foreignId('marca_id')->default(null)->nullable()->constrained('marcas')->cascadeOnUpdate()->nullOnDelete();
+            $table->string('ubicacion', 50)->nullable();
+            $table->foreignId('marca_id')->nullable()->default(null)->constrained('marcas')->cascadeOnUpdate()->nullOnDelete();
+            $table->foreignId('categoria_id')->nullable()->default(null)->constrained('categorias')->cascadeOnUpdate()->nullOnDelete();
             $table->timestamps();
         });
     }
+    
 
     /**
      * Reverse the migrations.

@@ -55,7 +55,7 @@ new class extends Component {
         //logica para almacenar el archivo
         $nombre = $this->file->getClientOriginalName();
         $extension = $this->file->getClientOriginalExtension();
-        $file = $this->file->store('public/uploads');
+        $file = $this->file->store('files');
 
         //almacenamos la imagen
         Archivo::create([

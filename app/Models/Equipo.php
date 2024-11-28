@@ -15,7 +15,12 @@ class Equipo extends Model
         return $this->belongsTo(Marca::class);
     }
 
-    public function responsable(){
-        return $this->belongsTo(Responsable::class);
+    public function intervalo(){
+        return $this->hasOne(IntervaloMantenimiento::class);
+    }
+
+    //relacion de muchos a muchos
+    public function responsables(){
+        return $this->belongsToMany(User::class);
     }
 }

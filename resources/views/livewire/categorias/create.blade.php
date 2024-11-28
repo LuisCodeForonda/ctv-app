@@ -11,6 +11,8 @@ new #[Layout('layouts.app')] class extends Component {
 
     public function save()
     {
+        $this->nombre = Str::lower($this->nombre);
+        
         $this->validate([
             'nombre' => 'required|min:3|max:30|unique:categorias'
         ]);

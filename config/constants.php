@@ -26,6 +26,18 @@ return [
         1 => 'Habilitada',
     ],
 
+    'fases' => [
+        1 => 'pendiente',
+        2 => 'en progreso',
+        3 => 'completado',
+    ],
+
+    'prioridad' => [
+        1 => 'alta',
+        2 => 'media',
+        3 => 'baja',
+    ],
+
     'noticia' => [
         0 => 'Pendiente',
         1 => 'Publicado'

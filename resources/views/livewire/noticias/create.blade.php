@@ -8,6 +8,7 @@ use App\Models\Noticia;
 use App\Models\Categoria;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 new #[Layout('layouts.app')] class extends Component {
     use WithFileUploads;
@@ -31,7 +32,7 @@ new #[Layout('layouts.app')] class extends Component {
     {
         $this->validate();
 
-        $this->image = $this->image->store(path: 'public/uploads/');
+        $this->image = Str::substr($this->image->store('public/uploads'), 7);
 
         Noticia::create([
             'titulo' => $this->titulo,
@@ -59,10 +60,10 @@ new #[Layout('layouts.app')] class extends Component {
     @endslot
 
     <x-layout-form title="Crear noticia">
+        
         @include('forms.noticia-form')
 
         <div class="flex justify-end gap-2">
-            
             <x-secondary-button href="{{ route('noticias.index') }}" wire:navigate>Cancelar</x-secondary-button>
             <x-primary-button>Guardar</x-primary-button>
         </div>

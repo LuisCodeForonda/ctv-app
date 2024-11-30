@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use App\Models\Equipo;
 use App\Models\Marca;
 use App\Models\Mantenimiento;
+use App\Models\DetalleMantenimiento;
 
 new #[Layout('layouts.app')] class extends Component {
     //variables de pagina
@@ -20,6 +21,16 @@ new #[Layout('layouts.app')] class extends Component {
     public $sortBy = 'created_at';
     public $sortDir = 'DESC';
 
+    //
+    public $mantenimientos = true;
+    public function mount()
+    {
+        $this->detalle = DetalleMantenimiento::where('mantenimiento_id', '=', '')->orWhereNull('mantenimiento_id')->get();
+
+        foreach ($this->detalle as $value) {
+            $value->delete();
+        }
+    }
 
     public function with()
     {
@@ -27,7 +38,6 @@ new #[Layout('layouts.app')] class extends Component {
             'data' => Mantenimiento::paginate($this->paginate),
         ];
     }
-
 }; ?>
 
 <div>
@@ -70,13 +80,14 @@ new #[Layout('layouts.app')] class extends Component {
                                 d="m1 1 4 4 4-4" />
                         </svg>
                     </button>
-    
+
                     <!-- Dropdown menu -->
                     <div x-show="dropdown"
                         class="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                            aria-labelledby="dropdownDefaultButton">
                             <li>
-                                <a x-on:click="dropdown = !dropdown" href="{{ route('componentes.export', 'excel')}}"
+                                <a x-on:click="dropdown = !dropdown" href="{{ route('componentes.export', 'excel') }}"
                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">excel</a>
                             </li>
                             <li>
@@ -84,10 +95,10 @@ new #[Layout('layouts.app')] class extends Component {
                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">pdf</a>
                             </li>
                             <li>
-                                <a x-on:click="dropdown = !dropdown" href="{{ route('componentes.export', 'csv')}}"
+                                <a x-on:click="dropdown = !dropdown" href="{{ route('componentes.export', 'csv') }}"
                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">csv</a>
                             </li>
-    
+
                         </ul>
                     </div>
                 </div>
@@ -108,22 +119,21 @@ new #[Layout('layouts.app')] class extends Component {
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        @include('includes.table-sortable', [
-                            'name' => 'descripcion',
-                            'displayName' => 'Descripcion',
-                        ])
-                        @include('includes.table-sortable', [
-                            'name' => 'modelo',
-                            'displayName' => 'Modelo',
-                        ])
-                        @include('includes.table-sortable', [
-                            'name' => 'serie',
-                            'displayName' => 'Serie',
-                        ])
-                         @include('includes.table-sortable', [
-                            'name' => 'cantidad',
-                            'displayName' => 'Cantidad',
-                        ])
+                        <th scope="col" class="px-6 py-3">
+                            Descripcion
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Equipo
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            serie
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Tecnico
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Fecha
+                        </th>
                         <th scope="col" class="px-6 py-3">
                             Acciones
                         </th>
@@ -135,16 +145,19 @@ new #[Layout('layouts.app')] class extends Component {
                             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                             <th scope="row"
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ Str::limit($item->descripcion, 40) }}
+                                {{ Str::limit($item->descripcion, 50) }}
                             </th>
                             <td class="px-6 py-4">
-                                {{ $item->modelo }}
+                                {{ Str::limit($item->equipo->descripcion, 30) }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ $item->serie }}
+                                {{ $item->equipo->serie }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ $item->cantidad }}
+                                {{ $item->user->name }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ $item->created_at }}
                             </td>
                             <td class="px-6 py-4 flex gap-4">
                                 <button wire:click="view({{ $item->id }})"
@@ -152,13 +165,16 @@ new #[Layout('layouts.app')] class extends Component {
                                     Show
                                 </button>
 
-                                <a href="{{ route('componentes.edit', $item) }}" wire:navigate
+                                <a href="{{ route('mantenimientos.pdf', $item->id)}}"
+                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Imprimir reporte</a>
+
+                                {{-- <a href="" wire:navigate
                                     class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
 
                                 <button wire:click="destroy({{ $item->id }})"
                                     class="font-medium text-red-500 dark:text-red-500 hover:underline">
                                     Eliminar
-                                </button>
+                                </button> --}}
                             </td>
                         </tr>
                     @endforeach

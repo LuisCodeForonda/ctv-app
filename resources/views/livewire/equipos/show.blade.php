@@ -114,7 +114,7 @@ new #[Layout('layouts.app')] class extends Component {
 
     <livewire:componentes.equipo-componente :equipo="$equipo" />
 
-    <livewire:archivos.equipo-componente :equipo="$equipo" />
+    {{-- <livewire:archivos.equipo-componente :equipo="$equipo" /> --}}
 
     <livewire:mantenimientos.equipo-componente :equipo="$equipo" />
 

@@ -14,20 +14,17 @@ new #[Layout('layouts.app')] class extends Component {
 
     public $tipo;
     public $descripcionDetalle;
-    public $costo;
+    public $costo = 0;
     public $observacion;
 
     //variables del funcionalidad grafica
     public $isDetalle = false;
-    public $detalle = [];
+    public $detalle;
 
-    // public function mount(){
-    //     $this->detalle = DetalleMantenimiento::where('mantenimiento_id', '=', '')->orWhereNull('mantenimiento_id')->get();
-
-    //     foreach ($this->detalle as $value) {
-    //         $value->delete();
-    //     }
-    // }
+    public function mount()
+    {
+        $this->detalle = DetalleMantenimiento::where('mantenimiento_id', '=', '')->orWhereNull('mantenimiento_id')->get();
+    }
 
     public function save()
     {
@@ -46,7 +43,7 @@ new #[Layout('layouts.app')] class extends Component {
             # code...
             $value->update([
                 'mantenimiento_id' => $mantenimiento->id,
-        ]);
+            ]);
         }
 
         return $this->redirect('/mantenimientos', navigate: true);
@@ -57,18 +54,17 @@ new #[Layout('layouts.app')] class extends Component {
         $this->validate([
             'tipo' => 'required|integer',
             'descripcionDetalle' => 'required|max:200',
-            'costo' => '',
+            'costo' => 'required|integer',
             'observacion' => 'max:200',
         ]);
 
-        $detalle_mantenimiento = new DetalleMantenimiento([
+        DetalleMantenimiento::create([
             'tipo' => $this->tipo,
             'descripcion' => $this->descripcionDetalle,
             'costo' => $this->costo,
             'observacion' => $this->observacion,
         ]);
-        $this->detalle [] = $detalle_mantenimiento;
-        
+
         $this->reset('tipo', 'descripcionDetalle', 'costo', 'observacion');
 
         $this->isDetalle = false;
@@ -77,6 +73,13 @@ new #[Layout('layouts.app')] class extends Component {
     public function agregar()
     {
         $this->isDetalle = true;
+    }
+
+    public function extraer($id){
+        $detalle = DetalleMantenimiento::findOrfail($id);
+        if($detalle){
+            $detalle->delete();
+        }
     }
 
     public function closeModal()
@@ -88,7 +91,7 @@ new #[Layout('layouts.app')] class extends Component {
     {
         return [
             'data' => Equipo::all(),
-            
+            $this->detalle = DetalleMantenimiento::where('mantenimiento_id', '=', '')->orWhereNull('mantenimiento_id')->get(),
         ];
     }
 }; ?>
@@ -126,7 +129,7 @@ new #[Layout('layouts.app')] class extends Component {
                         <x-input-error :messages="$errors->get('descripcion')" class="mt-2" />
                     </div>
                 </div>
-                
+
 
                 <div>
                     <h2>Detalle del mantenimiento</h2>
@@ -139,13 +142,13 @@ new #[Layout('layouts.app')] class extends Component {
                                 class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
                                     <th scope="col" class="px-6 py-3">
+                                        Tipo
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
                                         Descripcion
                                     </th>
                                     <th scope="col" class="px-6 py-3">
-                                        Modelo
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Serie
+                                        Costo
                                     </th>
                                     <th scope="col" class="px-6 py-3">
                                         <span class="sr-only">Acciones</span>
@@ -158,16 +161,16 @@ new #[Layout('layouts.app')] class extends Component {
                                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                         <th scope="row"
                                             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {{ $item->tipo }}
+                                            {{ config('constants.tipo')[$item->tipo] }}
                                         </th>
                                         <td class="px-6 py-4">
                                             {{ $item->descripcion }}
                                         </td>
                                         <td class="px-6 py-4">
-                                            {{ $item->costo }}
+                                            {{ $item->costo }} Bs
                                         </td>
                                         <td class="px-6 py-4 text-right">
-                                            <button wire:click.prevent="agregar({{ $item->id }})"
+                                            <button wire:click.prevent="extraer({{ $item->id }})"
                                                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Quitar</button>
                                         </td>
                                     </tr>

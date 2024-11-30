@@ -20,7 +20,12 @@ module.exports = {
         },
     },
 
-    plugins: [require("flowbite/plugin"), forms],
+    plugins: [
+        require("flowbite/plugin")({
+            charts: true,
+        }), 
+        forms
+    ],
 };
 
 // module.exports = {

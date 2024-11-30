@@ -155,13 +155,19 @@ new #[Layout('layouts.app')] class extends Component {
                             Id
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Acciones
+                            Descripcion falla
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Acciones
+                            Descripcion equipo
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Acciones
+                            Modelo
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Serie
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Estado
                         </th>
                         <th scope="col" class="px-6 py-3">
                             Acciones

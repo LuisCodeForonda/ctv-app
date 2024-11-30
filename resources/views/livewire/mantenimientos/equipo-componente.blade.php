@@ -9,7 +9,6 @@ new class extends Component {
     public $equipo;
 
     //variables del modelo
-    public $tipo;
     public $descripcion;
     public $equipo_id;
     public $user_id;
@@ -121,10 +120,10 @@ new class extends Component {
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                             <th scope="col" class="px-6 py-3">
-                                Descripcion
+                                Codigo
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                Tipo
+                                Descripcion
                             </th>
                             <th scope="col" class="px-6 py-3">
                                 Tecnico
@@ -138,13 +137,13 @@ new class extends Component {
                         @foreach ($data as $item)
                             <tr wire:key="{{ $item->id }}"
                                 class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                <td class="px-6 py-4">
+                                    {{ $item->id }}
+                                </td>
                                 <th scope="row"
                                     class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                     {{ $item->descripcion }}
                                 </th>
-                                <td class="px-6 py-4">
-                                    {{ config('constants.tipo')[$item->tipo] }}
-                                </td>
                                 <td class="px-6 py-4">
                                     {{ $item->user->name }}
                                 </td>
@@ -155,12 +154,12 @@ new class extends Component {
                                     </button>
                                     <button wire:click="edit({{ $item->id }})"
                                         class="font-medium text-blue-500 dark:text-blue-500 hover:underline">
-                                        Editar
+                                        Imprimir reporte
                                     </button>
-                                    <button wire:click="destroy({{ $item->id }})"
+                                    {{-- <button wire:click="destroy({{ $item->id }})"
                                         class="font-medium text-red-500 dark:text-red-500 hover:underline">
                                         Eliminar
-                                    </button>
+                                    </button> --}}
                                 </td>
                             </tr>
                         @endforeach

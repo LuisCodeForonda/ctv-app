@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('mantenimiento_id')->nullable()->constrained('mantenimientos')->cascadeOnUpdate()->nullOnDelete();
             $table->tinyInteger('tipo')->default(1);
             $table->longText('descripcion', 500);
-            $table->float('costo');
-            $table->string('observacion', 200);
+            $table->float('costo')->nullable();
+            $table->string('observacion', 200)->nullable();
             $table->timestamps();
         });
     }

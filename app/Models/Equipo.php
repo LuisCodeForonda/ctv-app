@@ -20,12 +20,17 @@ class Equipo extends Model
         return $this->hasOne(IntervaloMantenimiento::class);
     }
 
+    //relacion de uno a muchos
     public function solicitudes(){
         return $this->hasMany(Solicitud::class);
     }
 
     public function asignado(){
         return $this->hasMany(UserEquipo::class);
+    }
+
+    public function mantenimientos(){
+        return $this->hasMany(Mantenimiento::class);
     }
 
     //relacion de muchos a muchos

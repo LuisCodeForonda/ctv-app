@@ -105,8 +105,8 @@
                 </div> --}}
 
                 <div class="flex flex-col items-center gap-4 mt-16">
-                    <h2 class="text-2xl text-slate-200">Copacabana de Televisión S.R.L.</h2>
-                    <div class="text-sm text-gray-500 dark:text-gray-400 sm:text-end sm:ms-0">
+                    <h2 class="text-2xl text-gray-800">SISTEC</h2>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 sm:text-end sm:ms-0">
                         Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
                     </div>
                 </div>

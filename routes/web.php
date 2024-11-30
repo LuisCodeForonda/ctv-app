@@ -70,7 +70,7 @@ Route::middleware(['auth'])->group(function () {
 
     Volt::route('/mantenimientos', 'mantenimientos.index')->middleware(['can:asignacion'])->name('mantenimientos.index');
     Volt::route('/mantenimientos/create', 'mantenimientos.create')->middleware(['can:asignacion'])->name('mantenimientos.create');
-    Volt::route('/mantenimientos/{mantenimiento}/detalle', 'mantenimientos.detalle')->middleware(['can:asignacion'])->name('mantenimientos.detalle');
+    Route::get('/mantenimientos/{mantenimiento}/pdf', [PdfController::class, 'mantenimiento'])->middleware(['can:asignacion'])->name('mantenimientos.pdf');
 
     Volt::route('/equipamiento', 'equipamiento.index')->middleware(['can:equipamiento'])->name('equipamiento.index');
 

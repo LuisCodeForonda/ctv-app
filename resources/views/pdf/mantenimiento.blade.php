@@ -43,66 +43,72 @@
 <body>
     <div class="container mx-auto">
         <div>
-            <h2>Reporte de equipos asignados</h2>
+            <h2>Reporte de mantenimiento</h2>
 
             <p><strong>Generado por: </strong>{{ Auth::user()->perfil->nombre }} <strong>fecha:</strong> {{ date('d-m-Y') }}</p>
 
         
             <div class="">
-                <h4>Usuario</h4>
+                <h4>Equipo</h4>
 
                 <div class="flex gap-4 flex-wrap">
-                    <p><strong>Nombre:</strong> {{ $user->perfil->nombre }}</p>
-                    <p><strong>Carnet:</strong> {{ $user->perfil->carnet }} </p>
-                    <p><strong>Cargo: </strong>{{ $user->perfil->cargo }} </p>
-                    <p><strong>Celular:</strong> {{ $user->perfil->celular }} </p>
+                    <p><strong>Descripcion:</strong> {{ $mantenimiento->equipo->descripcion }}</p>
+                    <p><strong>Modelo:</strong> {{ $mantenimiento->equipo->modelo }} </p>
+                    <p><strong>Serie: </strong>{{ $mantenimiento->equipo->serie }} </p>
+                    <p><strong>Estado:</strong> {{ config('constants.estados')[$mantenimiento->equipo->estado] }} </p>
                 </div>
 
-                <h4>Detalle equipos asignados</h4>
+                <h4>Mantenimiento</h4>
 
+                <p>
+                    {{ $mantenimiento->descripcion }}
+                </p>
+                
+                <p><strong>Realizado en fecha:</strong> {{ $mantenimiento->created_at }}, <strong>por:</strong> {{ $mantenimiento->user->perfil->nombre }}</p>
                 <div class="">
+                    <h5>Detalle del mantenimiento</h5>
                     <table class="">
                         <thead class="">
                             <tr>
                                 <th scope="col" class="">
-                                    Descripcion
+                                    Tipo
                                 </th>
                                 <th scope="col" class="">
-                                    Modelo
+                                    Descripcion
                                 </th>
                                 <th scope="col" class=" ">
-                                    Serie
+                                    Costo
                                 </th>
                                 <th scope="col" class=" ">
-                                    Fecha asignacion
+                                    observacion
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($user->asignados as $item)
+                            @foreach ($mantenimiento->detalle as $item)
                                 <tr class="bg-white dark:bg-gray-800">
+                                    <td class="px-6 py-4">
+                                        {{ config('constants.tipo')[$item->tipo] }}
+                                    </td>
                                     <th scope="row"
                                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        {{ Str::limit($item->equipo->descripcion, 50) }}
+                                        {{ Str::limit($item->descripcion, 50) }}
                                     </th>
                                     <td class="px-6 py-4">
-                                        {{ $item->equipo->modelo }}
+                                        {{ $item->costo }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ $item->equipo->serie }}
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        {{ $item->fecha_asignacion }}
+                                        {{ $item->observacion }}
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
-                        <tfoot>
+                        {{-- <tfoot>
                             <tr class="font-semibold text-gray-900 dark:text-white">
                                 <th scope="row" class="px-6 py-3 text-base">Total asignados</th>
-                                <td colspan="3" class="px-6 py-3">{{ count($user->asignados) }}</td>
+                                <td colspan="3" class="px-6 py-3">{{ count($mante->asignados) }}</td>
                             </tr>
-                        </tfoot>
+                        </tfoot> --}}
                     </table>
                 </div>
 

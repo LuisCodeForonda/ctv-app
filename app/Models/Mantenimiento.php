@@ -18,4 +18,8 @@ class Mantenimiento extends Model
     public function detalle(){
         return $this->hasMany(DetalleMantenimiento::class);
     }
+
+    public function equipo(){
+        return $this->belongsTo(Equipo::class);
+    }
 }

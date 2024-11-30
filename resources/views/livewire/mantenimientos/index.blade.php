@@ -6,85 +6,42 @@ use Livewire\WithPagination;
 use Illuminate\Support\Str;
 use App\Models\Equipo;
 use App\Models\Marca;
+use App\Models\Mantenimiento;
 
 new #[Layout('layouts.app')] class extends Component {
-    use WithPagination;
-
     //variables de pagina
     public $paginate = 10;
     public $search = '';
     public $show = false;
     public $showDelete = false;
     public $equipo;
-
+    public $reporteModal = false;
     //ordenar
     public $sortBy = 'created_at';
     public $sortDir = 'DESC';
 
-    //funciones
-    public function view($id)
-    {
-        $this->equipo = Equipo::findOrFail($id);
-        $this->show = true;
-    }
-
-    public function destroy($id)
-    {
-        $this->equipo = Equipo::findOrFail($id);
-        $this->showDelete = true;
-    }
-
-    public function confirmDestroy()
-    {
-        $this->equipo->delete();
-        session()->flash('message', 'Eliminado Exitosamente.');
-        $this->showDelete = false;
-    }
-
-    public function closeModal()
-    {
-        $this->reset('equipo');
-        $this->show = false;
-        $this->showDelete = false;
-    }
-
-    public function setSortBy($sort)
-    {
-        if ($this->sortBy === $sort) {
-            $this->sortDir = $this->sortDir == 'ASC' ? 'DESC' : 'ASC';
-            return;
-        }
-        $this->sortBy = $sort;
-        $this->sortDir = 'DESC';
-    }
-
-    public function updatedSearch()
-    {
-        $this->resetPage();
-    }
 
     public function with()
     {
         return [
-            'data' => Equipo::where('descripcion', 'LIKE', '%' . $this->search . '%')
-                ->orderBy($this->sortBy, $this->sortDir)
-                ->paginate($this->paginate),
+            'data' => Mantenimiento::paginate($this->paginate),
         ];
     }
+
 }; ?>
 
 <div>
     @slot('header')
-        <h1 class="font-bold">Equipos</h1>
+        <h1 class="font-bold">Mantenimientos</h1>
     @endslot
 
     @if ($data->isEmpty())
         <div class="text-center mt-8">
-            <p class="mb-4 text-2xl">Aún no hay equipos</p>
-            <x-primary-button href="{{ route('equipos.create') }}" wire:navigate>Nuevo</x-primary-button>
+            <p class="mb-4 text-2xl">Aún no hay registros</p>
+            <x-primary-button href="{{ route('mantenimientos.create') }}" wire:navigate>Nuevo</x-primary-button>
         </div>
     @else
-        <x-primary-button href="{{ route('equipos.create') }}" wire:navigate>Nuevo</x-primary-button>
+        <x-primary-button href="{{ route('mantenimientos.create') }}" wire:navigate>Nuevo</x-primary-button>
 
         <div class="flex flex-row justify-between items-center py-2">
             <div class="flex items-center w-64 max-w-sm">
@@ -104,7 +61,6 @@ new #[Layout('layouts.app')] class extends Component {
             </div>
 
             <div class="flex gap-2">
-
                 <div x-data="{ dropdown: false }" x-on:click.away="dropdown = false" class="relative">
                     <button x-on:click="dropdown = !dropdown"
                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -120,7 +76,7 @@ new #[Layout('layouts.app')] class extends Component {
                         class="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
                         <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
                             <li>
-                                <a x-on:click="dropdown = !dropdown" href="{{ route('equipos.export', 'excel')}}"
+                                <a x-on:click="dropdown = !dropdown" href="{{ route('componentes.export', 'excel')}}"
                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">excel</a>
                             </li>
                             <li>
@@ -128,7 +84,7 @@ new #[Layout('layouts.app')] class extends Component {
                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">pdf</a>
                             </li>
                             <li>
-                                <a x-on:click="dropdown = !dropdown" href="{{ route('equipos.export', 'csv')}}"
+                                <a x-on:click="dropdown = !dropdown" href="{{ route('componentes.export', 'csv')}}"
                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">csv</a>
                             </li>
     
@@ -137,7 +93,7 @@ new #[Layout('layouts.app')] class extends Component {
                 </div>
 
                 <div class="w-32">
-                    <select wire:model.live="paginate"
+                    <select id="countries" wire:model.live="paginate"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         <option selected value="10">10 registros</option>
                         <option value="25">25 registros</option>
@@ -146,8 +102,6 @@ new #[Layout('layouts.app')] class extends Component {
                     </select>
                 </div>
             </div>
-           
-
         </div>
 
         <div class="relative overflow-x-auto">
@@ -166,9 +120,9 @@ new #[Layout('layouts.app')] class extends Component {
                             'name' => 'serie',
                             'displayName' => 'Serie',
                         ])
-                        @include('includes.table-sortable', [
-                            'name' => 'estado',
-                            'displayName' => 'Estado',
+                         @include('includes.table-sortable', [
+                            'name' => 'cantidad',
+                            'displayName' => 'Cantidad',
                         ])
                         <th scope="col" class="px-6 py-3">
                             Acciones
@@ -189,8 +143,8 @@ new #[Layout('layouts.app')] class extends Component {
                             <td class="px-6 py-4">
                                 {{ $item->serie }}
                             </td>
-                            <td class="px-6 py-4 {{ 'text-' . config('constants.colores')[$item->estado] . '-600' }}">
-                                {{ config('constants.estados')[$item->estado] }}
+                            <td class="px-6 py-4">
+                                {{ $item->cantidad }}
                             </td>
                             <td class="px-6 py-4 flex gap-4">
                                 <button wire:click="view({{ $item->id }})"
@@ -198,10 +152,7 @@ new #[Layout('layouts.app')] class extends Component {
                                     Show
                                 </button>
 
-                                <a href="{{ route('equipos.show', $item->slug) }}" wire:navigate
-                                    class="font-medium text-gray-600 dark:text-gray-500 hover:underline">Info</a>
-
-                                <a href="{{ route('equipos.edit', $item) }}" wire:navigate
+                                <a href="{{ route('componentes.edit', $item) }}" wire:navigate
                                     class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
 
                                 <button wire:click="destroy({{ $item->id }})"
@@ -218,53 +169,5 @@ new #[Layout('layouts.app')] class extends Component {
                 {{ $data->links() }}
             </div>
         </div>
-    @endif
-
-    @if ($show)
-        <x-modal-show title="Detalle del marca">
-            <strong>Descripcion</strong>
-            <p>{{ $equipo->descripcion }}</p>
-            @if ($equipo->observaciones)
-                <strong>Observaciones</strong>
-                <p>{{ $equipo->observaciones }}</p>
-            @endif
-            @if ($equipo->modelo)
-                <strong>Modelo</strong>
-                <p>{{ $equipo->modelo }}</p>
-            @endif
-            @if ($equipo->serie)
-                <strong>Serie</strong>
-                <p>{{ $equipo->serie }}</p>
-            @endif
-            @if ($equipo->cantidad)
-                <strong>cantidad</strong>
-                <p>{{ $equipo->cantidad }}</p>
-            @endif
-
-            <strong>estado</strong>
-            <p>
-                @if ($equipo->estado == 1)
-                    Stand by
-                @elseif($equipo->estado == 2)
-                    Operativo
-                @elseif($equipo->estado == 3)
-                    Mantenimiento
-                @elseif($equipo->estado == 4)
-                    Malo
-                @endif
-            </p>
-
-
-            @if ($equipo->marca)
-                <strong>marca</strong>
-                <p>{{ $equipo->marca->nombre }}</p>
-            @endif
-        </x-modal-show>
-    @endif
-
-    @if ($showDelete)
-        <x-modal-destroy-confirm>
-            <p class="mb-4">{{ $equipo->descripcion }}</p>
-        </x-modal-destroy-confirm>
     @endif
 </div>

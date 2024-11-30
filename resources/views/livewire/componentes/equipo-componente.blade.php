@@ -1,5 +1,6 @@
 <?php
 
+
 use Livewire\Volt\Component;
 use App\Models\Componente;
 use App\Models\Equipo;
@@ -263,7 +264,7 @@ new class extends Component {
                                 class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                 <th scope="row"
                                     class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    {{ $item->descripcion }}
+                                    {{ Str::limit($item->descripcion, 40) }}
                                 </th>
                                 <td class="px-6 py-4">
                                     {{ $item->modelo }}
@@ -321,7 +322,7 @@ new class extends Component {
                                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                         <th scope="row"
                                             class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {{ $item->descripcion }}
+                                            {{ Str::limit($item->descripcion, 40) }}
                                         </th>
                                         <td class="py-2 ">
                                             {{ $item->serie }}
@@ -346,7 +347,7 @@ new class extends Component {
                                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                         <th scope="row"
                                             class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {{ $item->descripcion }}
+                                            {{ Str::limit($item->descripcion, 40) }}
                                         </th>
                                         <td class="py-2">
                                             {{ $item->serie }}
@@ -385,7 +386,7 @@ new class extends Component {
                                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                         <th scope="row"
                                             class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {{ $item->descripcion }}
+                                            {{ Str::limit($item->descripcion, 40) }}
                                         </th>
                                         <td class="py-2 ">
                                             {{ $item->serie }}
@@ -411,7 +412,7 @@ new class extends Component {
                                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                         <th scope="row"
                                             class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {{ $item->descripcion }}
+                                            {{ Str::limit($item->descripcion, 40) }}
                                         </th>
                                         <td class="py-2 ">
                                             {{ $item->serie }}

@@ -17,7 +17,6 @@ class EquipoFactory extends Factory
     public function definition(): array
     {
         return [
-
             'descripcion' => $this->faker->paragraph,
             'observaciones' => $this->faker->lastName,
             'modelo' => $this->faker->name,
@@ -27,8 +26,8 @@ class EquipoFactory extends Factory
             'area' => $this->faker->name,
             'ubicacion' => $this->faker->name,
             'slug' => $this->faker->uuid,
-            'responsable_id' => $this->faker->randomElement([1,2,3,4,5]),
             'marca_id' => $this->faker->randomElement([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+            'categoria_id' => $this->faker->randomElement([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
         ];
     }
 }

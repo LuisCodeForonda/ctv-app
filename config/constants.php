@@ -33,14 +33,9 @@ return [
     ],
 
     'prioridad' => [
-        1 => 'alta',
+        1 => 'baja',
         2 => 'media',
-        3 => 'baja',
+        3 => 'alta',
     ],
-
-    'noticia' => [
-        0 => 'Pendiente',
-        1 => 'Publicado'
-    ]
    
 ];

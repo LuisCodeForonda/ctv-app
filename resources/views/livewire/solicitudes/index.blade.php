@@ -66,25 +66,21 @@ new #[Layout('layouts.app')] class extends Component {
     public function with()
     {
         return [
-            'data' => Equipo::where('descripcion', 'LIKE', '%' . $this->search . '%')
-                ->orderBy($this->sortBy, $this->sortDir)
-                ->paginate($this->paginate),
+            'data' => Auth::user()->solicitudes,
         ];
     }
 }; ?>
 
 <div>
     @slot('header')
-        <h1 class="font-bold">Equipos</h1>
+        <h1 class="font-bold">Solicitudes</h1>
     @endslot
 
     @if ($data->isEmpty())
         <div class="text-center mt-8">
-            <p class="mb-4 text-2xl">Aún no hay equipos</p>
-            <x-primary-button href="{{ route('equipos.create') }}" wire:navigate>Nuevo</x-primary-button>
+            <p class="mb-4 text-2xl">Aún no hay solicitudes</p>
         </div>
     @else
-        <x-primary-button href="{{ route('equipos.create') }}" wire:navigate>Nuevo</x-primary-button>
 
         <div class="flex flex-row justify-between items-center py-2">
             <div class="flex items-center w-64 max-w-sm">
@@ -114,13 +110,14 @@ new #[Layout('layouts.app')] class extends Component {
                                 d="m1 1 4 4 4-4" />
                         </svg>
                     </button>
-    
+
                     <!-- Dropdown menu -->
                     <div x-show="dropdown"
                         class="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                            aria-labelledby="dropdownDefaultButton">
                             <li>
-                                <a x-on:click="dropdown = !dropdown" href="{{ route('equipos.export', 'excel')}}"
+                                <a x-on:click="dropdown = !dropdown" href="{{ route('equipos.export', 'excel') }}"
                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">excel</a>
                             </li>
                             <li>
@@ -128,10 +125,10 @@ new #[Layout('layouts.app')] class extends Component {
                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">pdf</a>
                             </li>
                             <li>
-                                <a x-on:click="dropdown = !dropdown" href="{{ route('equipos.export', 'csv')}}"
+                                <a x-on:click="dropdown = !dropdown" href="{{ route('equipos.export', 'csv') }}"
                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">csv</a>
                             </li>
-    
+
                         </ul>
                     </div>
                 </div>
@@ -146,7 +143,7 @@ new #[Layout('layouts.app')] class extends Component {
                     </select>
                 </div>
             </div>
-           
+
 
         </div>
 
@@ -154,22 +151,18 @@ new #[Layout('layouts.app')] class extends Component {
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        @include('includes.table-sortable', [
-                            'name' => 'descripcion',
-                            'displayName' => 'Descripcion',
-                        ])
-                        @include('includes.table-sortable', [
-                            'name' => 'modelo',
-                            'displayName' => 'Modelo',
-                        ])
-                        @include('includes.table-sortable', [
-                            'name' => 'serie',
-                            'displayName' => 'Serie',
-                        ])
-                        @include('includes.table-sortable', [
-                            'name' => 'estado',
-                            'displayName' => 'Estado',
-                        ])
+                        <th scope="col" class="px-6 py-3">
+                            Id
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Acciones
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Acciones
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Acciones
+                        </th>
                         <th scope="col" class="px-6 py-3">
                             Acciones
                         </th>
@@ -181,90 +174,35 @@ new #[Layout('layouts.app')] class extends Component {
                             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                             <th scope="row"
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ Str::limit($item->descripcion, 40) }}
+                                {{ $item->id }}
                             </th>
                             <td class="px-6 py-4">
-                                {{ $item->modelo }}
+                                {{ Str::limit($item->descripcion, 30) }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ $item->serie }}
+                                {{ Str::limit($item->equipo->descripcion, 30) }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ $item->equipo->modelo }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ $item->equipo->serie }}
                             </td>
                             <td class="px-6 py-4 {{ 'text-' . config('constants.colores')[$item->estado] . '-600' }}">
-                                {{ config('constants.estados')[$item->estado] }}
+                                {{ config('constants.fases')[$item->estado] }}
                             </td>
                             <td class="px-6 py-4 flex gap-4">
                                 <button wire:click="view({{ $item->id }})"
                                     class="font-medium text-yellow-500 dark:text-yellow-500 hover:underline">
-                                    Show
+                                    imprimir
                                 </button>
-
-                                <a href="{{ route('equipos.show', $item->slug) }}" wire:navigate
-                                    class="font-medium text-gray-600 dark:text-gray-500 hover:underline">Info</a>
-
-                                <a href="{{ route('equipos.edit', $item) }}" wire:navigate
-                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
-
-                                <button wire:click="destroy({{ $item->id }})"
-                                    class="font-medium text-red-500 dark:text-red-500 hover:underline">
-                                    Eliminar
-                                </button>
+                               
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
 
             </table>
-            <div class="py-2">
-                {{ $data->links() }}
-            </div>
         </div>
-    @endif
-
-    @if ($show)
-        <x-modal-show title="Detalle del marca">
-            <strong>Descripcion</strong>
-            <p>{{ $equipo->descripcion }}</p>
-            @if ($equipo->observaciones)
-                <strong>Observaciones</strong>
-                <p>{{ $equipo->observaciones }}</p>
-            @endif
-            @if ($equipo->modelo)
-                <strong>Modelo</strong>
-                <p>{{ $equipo->modelo }}</p>
-            @endif
-            @if ($equipo->serie)
-                <strong>Serie</strong>
-                <p>{{ $equipo->serie }}</p>
-            @endif
-            @if ($equipo->cantidad)
-                <strong>cantidad</strong>
-                <p>{{ $equipo->cantidad }}</p>
-            @endif
-
-            <strong>estado</strong>
-            <p>
-                @if ($equipo->estado == 1)
-                    Stand by
-                @elseif($equipo->estado == 2)
-                    Operativo
-                @elseif($equipo->estado == 3)
-                    Mantenimiento
-                @elseif($equipo->estado == 4)
-                    Malo
-                @endif
-            </p>
-
-
-            @if ($equipo->marca)
-                <strong>marca</strong>
-                <p>{{ $equipo->marca->nombre }}</p>
-            @endif
-        </x-modal-show>
-    @endif
-
-    @if ($showDelete)
-        <x-modal-destroy-confirm>
-            <p class="mb-4">{{ $equipo->descripcion }}</p>
-        </x-modal-destroy-confirm>
     @endif
 </div>

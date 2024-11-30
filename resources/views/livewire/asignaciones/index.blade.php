@@ -8,6 +8,7 @@ use App\Models\Equipo;
 use App\Models\User;
 use App\Models\Marca;
 use App\Models\Categoria;
+use App\Models\UserEquipo;
 
 new #[Layout('layouts.app')] class extends Component {
     use WithPagination;
@@ -17,7 +18,7 @@ new #[Layout('layouts.app')] class extends Component {
     public $search = '';
     public $show = false;
     public $showDelete = false;
-    public $asignacion;
+    public $usuario;
 
     //ordenar
     public $sortBy = 'created_at';
@@ -26,26 +27,26 @@ new #[Layout('layouts.app')] class extends Component {
     //funciones
     public function view($id)
     {
-        $this->asignacion = Equipo::findOrFail($id);
+        $this->usuario = User::findOrFail($id);
         $this->show = true;
     }
 
     public function destroy($id)
     {
-        $this->equipo = Equipo::findOrFail($id);
+        $this->usuario = User::findOrFail($id);
         $this->showDelete = true;
     }
 
     public function confirmDestroy()
     {
-        $this->equipo->delete();
+        $this->usuario->delete();
         session()->flash('message', 'Eliminado Exitosamente.');
         $this->showDelete = false;
     }
 
     public function closeModal()
     {
-        $this->reset('equipo');
+        $this->reset('usuario');
         $this->show = false;
         $this->showDelete = false;
     }
@@ -68,29 +69,28 @@ new #[Layout('layouts.app')] class extends Component {
     public function with()
     {
         return [
-            'marcas' => Marca::all(),
-            'categorias' => Categoria::all(),
-            'data' => Equipo::where('descripcion', 'LIKE', '%' . $this->search . '%')
-                ->orderBy($this->sortBy, $this->sortDir)
-                ->paginate($this->paginate),
+            'data' => User::has('equipos')->get(),
+            // 'data' => User::where('name', 'LIKE', '%' . $this->search . '%')
+            //     ->orderBy($this->sortBy, $this->sortDir)
+            //     ->paginate($this->paginate),
         ];
     }
 }; ?>
 
 <div>
     @slot('header')
-        <h1 class="font-bold">Asignaciones</h1>
+        <h1 class="font-bold">Usuarios</h1>
     @endslot
 
     @if ($data->isEmpty())
         <div class="text-center mt-8">
-            <p class="mb-4 text-2xl">Aún no hay equipos</p>
-            <x-primary-button href="{{ route('equipos.create') }}" wire:navigate>Asignar equipos</x-primary-button>
+            <p class="mb-4 text-2xl">Aún no hay registros</p>
+            <x-primary-button href="{{ route('asignaciones.create') }}" wire:navigate>Nuevo</x-primary-button>
         </div>
     @else
-        <x-primary-button href="{{ route('asignaciones.create') }}" wire:navigate>Asingar equipos</x-primary-button>
-
+        <x-primary-button href="{{ route('asignaciones.create') }}" wire:navigate>Nuevo</x-primary-button>
         <div class="flex flex-row justify-between items-center py-2">
+
             <div class="flex items-center w-64 max-w-sm">
                 <label for="simple-search" class="sr-only">Search</label>
                 <div class="relative w-full">
@@ -106,120 +106,103 @@ new #[Layout('layouts.app')] class extends Component {
                         placeholder="Buscar..." />
                 </div>
             </div>
-
-            <div class="flex gap-2">
-
-                <div x-data="{ dropdown: false }" x-on:click.away="dropdown = false" class="relative">
-                    <button x-on:click="dropdown = !dropdown"
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                        type="button">Exportar<svg class="w-2.5 h-2.5 ms-3" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="m1 1 4 4 4-4" />
-                        </svg>
-                    </button>
-    
-                    <!-- Dropdown menu -->
-                    <div x-show="dropdown"
-                        class="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-                            <li>
-                                <a x-on:click="dropdown = !dropdown" href="{{ route('equipos.export', 'excel')}}"
-                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">excel</a>
-                            </li>
-                            <li>
-                                <a x-on:click="dropdown = !dropdown" href="#"
-                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">pdf</a>
-                            </li>
-                            <li>
-                                <a x-on:click="dropdown = !dropdown" href="{{ route('equipos.export', 'csv')}}"
-                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">csv</a>
-                            </li>
-    
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="w-32">
-                    <select wire:model.live="paginate"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                        <option selected value="10">10 registros</option>
-                        <option value="25">25 registros</option>
-                        <option value="50">50 registros</option>
-                        <option value="100">100 registros</option>
-                    </select>
-                </div>
+            <div class="w-32">
+                <select id="countries" wire:model.live="paginate"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <option selected value="10">10 registros</option>
+                    <option value="25">25 registros</option>
+                    <option value="50">50 registros</option>
+                    <option value="100">100 registros</option>
+                </select>
             </div>
-           
 
         </div>
 
+
         <div class="relative overflow-x-auto">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        @include('includes.table-sortable', [
-                            'name' => 'descripcion',
-                            'displayName' => 'Descripcion',
-                        ])
-                        @include('includes.table-sortable', [
-                            'name' => 'modelo',
-                            'displayName' => 'Modelo',
-                        ])
-                        @include('includes.table-sortable', [
-                            'name' => 'serie',
-                            'displayName' => 'Serie',
-                        ])
-                        @include('includes.table-sortable', [
-                            'name' => 'estado',
-                            'displayName' => 'Estado',
-                        ])
-                        <th scope="col" class="px-6 py-3">
-                            Acciones
-                        </th>
-                    </tr>
-                </thead>
+
                 <tbody>
-                    @foreach ($data as $item)
-                        <tr wire:key="{{ $item->id }}"
-                            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                            <th scope="row"
-                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ Str::limit($item->descripcion, 40) }}
-                            </th>
-                            <td class="px-6 py-4">
-                                {{ $item->modelo }}
-                            </td>
-                            <td class="px-6 py-4">
-                                {{ $item->serie }}
-                            </td>
-                            <td class="px-6 py-4 {{ 'text-' . config('constants.colores')[$item->estado] . '-600' }}">
-                                {{ config('constants.estados')[$item->estado] }}
-                            </td>
-                            <td class="px-6 py-4 flex gap-4">
-                                <button wire:click="view({{ $item->id }})"
-                                    class="font-medium text-yellow-500 dark:text-yellow-500 hover:underline">
-                                    Show
-                                </button>
+                    <div>
+                        @foreach ($data as $item)
+                            <div class="p-2">
+                                <div class="flex gap-4 flex-wrap">
+                                    <p>Nombre: {{ $item->perfil->nombre }}</p>
+                                    <p>Carnet: {{ $item->perfil->carnet }} </p>
+                                    <p>Cargo: {{ $item->perfil->cargo }} </p>
+                                    <p>Celular: {{ $item->perfil->celular }} </p>
+                                </div>
+                                <div class="flex gap-4">
+                                    <a href="{{ route('asignaciones.edit', $item) }}" wire:navigate
+                                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Actualizar sus
+                                        equipos</a>
+                                    <a href="{{ route('asignaciones.pdf', $item->id) }}"
+                                        class="font-medium text-yellow-600 dark:text-yellow-500 hover:underline">Generar
+                                        reporte</a>
+                                </div>
 
-                                <a href="{{ route('equipos.show', $item->slug) }}" wire:navigate
-                                    class="font-medium text-gray-600 dark:text-gray-500 hover:underline">Info</a>
 
-                                <a href="{{ route('equipos.edit', $item) }}" wire:navigate
-                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
+                                <h2>Equipos Asignados</h2>
 
-                                <button wire:click="destroy({{ $item->id }})"
-                                    class="font-medium text-red-500 dark:text-red-500 hover:underline">
-                                    Eliminar
-                                </button>
-                            </td>
-                        </tr>
-                    @endforeach
+                                <div class="relative overflow-x-auto">
+                                    <table
+                                        class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                        <thead
+                                            class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                                            <tr>
+                                                <th scope="col" class="px-6 py-3 ">
+                                                    Descripcion
+                                                </th>
+                                                <th scope="col" class="px-6 py-3">
+                                                    Modelo
+                                                </th>
+                                                <th scope="col" class="px-6 py-3 ">
+                                                    Serie
+                                                </th>
+                                                <th scope="col" class="px-6 py-3 ">
+                                                    Fecha asignacion
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($item->asignados as $item)
+                                                <tr class="bg-white dark:bg-gray-800">
+                                                    <th scope="row"
+                                                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                        {{ Str::limit($item->equipo->descripcion, 50) }}
+                                                    </th>
+                                                    <td class="px-6 py-4">
+                                                        {{ $item->equipo->modelo }}
+                                                    </td>
+                                                    <td class="px-6 py-4">
+                                                        {{ $item->equipo->serie }}
+                                                    </td>
+                                                    <td class="px-6 py-4">
+                                                        {{ $item->fecha_asignacion }}
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                        <tfoot>
+                                            <tr class="font-semibold text-gray-900 dark:text-white">
+                                                <th scope="row" class="px-6 py-3 text-base">Total</th>
+                                                <td class="px-6 py-3">3</td>
+                                                <td class="px-6 py-3">21,000</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+
+                            </div>
+                            <hr>
+                        @endforeach
+                    </div>
+
                 </tbody>
 
             </table>
             <div class="py-2">
-                {{ $data->links() }}
+
             </div>
         </div>
     @endif

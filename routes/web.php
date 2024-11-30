@@ -5,6 +5,7 @@ use App\Http\Controllers\ComponenteController;
 use App\Http\Controllers\EquipoController;
 use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\MarcasController;
+use App\Http\Controllers\PdfController;
 use App\Http\Controllers\ResponsableController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -62,14 +63,18 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('/componentes/{componente}/edit', 'componentes.edit')->middleware(['can:componente'])->name('componentes.edit');
     Route::get('/componentes/export/{format}', [ComponenteController::class, 'export'])->middleware(['can:componente'])->name('componentes.export');
 
-    Volt::route('/asignaciones', 'asignaciones.index')->middleware(['can:componente'])->name('asignaciones.index');
-    Volt::route('/asignaciones/create', 'asignaciones.create')->middleware(['can:componente'])->name('asignaciones.create');
-    Volt::route('/asignaciones/{asignaciones}/edit', 'asignaciones.edit')->middleware(['can:componente'])->name('asignaciones.edit');
-    Route::get('/asignaciones/export/{format}', [ComponenteController::class, 'export'])->middleware(['can:componente'])->name('asignaciones.export');
+    Volt::route('/asignaciones', 'asignaciones.index')->middleware(['can:asignacion'])->name('asignaciones.index');
+    Volt::route('/asignaciones/create', 'asignaciones.create')->middleware(['can:asignacion'])->name('asignaciones.create');
+    Volt::route('/asignaciones/{user}/edit', 'asignaciones.edit')->middleware(['can:asignacion'])->name('asignaciones.edit');
+    Route::get('/asignaciones/{user}/pdf', [PdfController::class, 'usuario_equipo'])->middleware(['can:asignacion'])->name('asignaciones.pdf');
 
-    Volt::route('/noticias', 'noticias.index')->middleware(['can:noticia index'])->name('noticias.index');
-    Volt::route('/noticias/create', 'noticias.create')->middleware(['can:noticia create'])->name('noticias.create');
-    Volt::route('/noticias/{noticia}/edit', 'noticias.edit')->middleware(['can:noticia edit'])->name('noticias.edit');
+    Volt::route('/mantenimientos', 'mantenimientos.index')->middleware(['can:asignacion'])->name('mantenimientos.index');
+    Volt::route('/mantenimientos/create', 'mantenimientos.create')->middleware(['can:asignacion'])->name('mantenimientos.create');
+    Volt::route('/mantenimientos/{mantenimiento}/detalle', 'mantenimientos.detalle')->middleware(['can:asignacion'])->name('mantenimientos.detalle');
+
+    Volt::route('/equipamiento', 'equipamiento.index')->middleware(['can:equipamiento'])->name('equipamiento.index');
+
+    Volt::route('/solicitudes', 'solicitudes.index')->middleware(['can:solititud'])->name('solicitudes.index');
 });
 
 require __DIR__ . '/auth.php';

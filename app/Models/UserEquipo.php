@@ -5,11 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Noticia extends Model
+class UserEquipo extends Model
 {
     use HasFactory;
 
-    protected $guarded = ['id'];
+    public function equipo(){
+        return $this->belongsTo(Equipo::class);
+    }
 
     public function user(){
         return $this->belongsTo(User::class);

@@ -56,23 +56,88 @@
 
             <!-- menu de navegacion -->
             <ul class="relative">
+                <li class="">
+                    <span class="block px-4 text-slate-400 text-sm">Administracion</span>
+                </li>
                 @can('user')
-                    <li class="border-l-2">
-                        <a href="{{ route('usuarios.index') }}" wire:navigate class="cursor-pointer">
+                    <li class="">
+                        <a href="{{ route('usuarios.index') }}" wire:navigate class="cursor-pointer flex px-4 py-2">
+                            <img src="{{ asset('icons/users.svg')}}" alt="" class="pr-2">
                             <span
-                                class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('marcas.index') ? 'text-white bg-slate-300/30' : '' }}">Usuarios</span>
+                                class="block  text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('marcas.index') ? 'text-white bg-slate-300/30' : '' }}"> Usuarios</span>
                         </a>
                     </li>
                 @endcan
                 @can('rol')
-                    <li class="border-l-2">
-                        <a href="{{ route('roles.index') }}" wire:navigate class="cursor-pointer ">
+                    <li class="">
+                        <a href="{{ route('roles.index') }}" wire:navigate class="cursor-pointer flex px-4 py-2">
+                            <img src="{{ asset('icons/user-detail.svg')}}" alt="" class="pr-2">
                             <span
-                                class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('componente.index') ? 'text-white bg-slate-300/30' : '' }}">Roles</span>
+                                class="block text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('componente.index') ? 'text-white bg-slate-300/30' : '' }}">Roles</span>
                         </a>
                     </li>
                 @endcan
-                
+                <li class="">
+                    <span class="block px-4 text-slate-400 text-sm">Administracion de equipos</span>
+                </li>
+                @can('marca')
+                    <li class="">
+                        <a href="{{ route('marcas.index') }}" wire:navigate class="cursor-pointer flex px-4 py-2">
+                            <img src="{{ asset('icons/marca.svg')}}" alt="" class="pr-2">
+                            <span
+                                class="block text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('marcas.index') ? 'text-white bg-slate-300/30' : '' }}">Marcas</span>
+                        </a>
+                    </li>
+                @endcan
+                @can('categoria')
+                    <li class="">
+                        <a href="{{ route('categorias.index') }}" wire:navigate class="cursor-pointer flex px-4 py-2">
+                            <img src="{{ asset('icons/categoria.svg')}}" alt="" class="pr-2">
+                            <span
+                                class="block text-slate-400 hover:text-white hover:bg-slate-300/30">Categorias</span>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('componente')
+                    <li class="">
+                        <a href="{{ route('componentes.index') }}" wire:navigate class="cursor-pointer flex px-4 py-2">
+                            <img src="{{ asset('icons/componente.svg')}}" alt="" class="pr-2">
+                            <span
+                                class="block text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('componente.index') ? 'text-white bg-slate-300/30' : '' }}">Componente</span>
+                        </a>
+                    </li>
+                @endcan
+                @can('equipo')
+                    <li class="">
+                        <a href="{{ route('equipos.index') }}" wire:navigate class="cursor-pointer flex px-4 py-2">
+                            <img src="{{ asset('icons/chip.svg')}}" alt="" class="pr-2">
+                            <span
+                                class="block text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('equipo.index') ? 'text-white bg-slate-300/30' : '' }}">Equipos</span>
+                        </a>
+                    </li>
+                @endcan
+
+
+                @can('equipo')
+                    <li class="">
+                        <a href="{{ route('asignaciones.index') }}" wire:navigate class="cursor-pointer flex px-4 py-2">
+                            <img src="{{ asset('icons/compartir.svg')}}" alt="" class="pr-2">
+                            <span
+                                class="block text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('asignaciones.index') ? 'text-white bg-slate-300/30' : '' }}">Asignaciones</span>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('equipo')
+                    <li class="">
+                        <a href="{{ route('mantenimientos.index') }}" wire:navigate class="cursor-pointer flex px-4 py-2">
+                            <img src="{{ asset('icons/mantenimiento.svg')}}" alt="" class="pr-2">
+                            <span
+                                class="block text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('asignaciones.index') ? 'text-white bg-slate-300/30' : '' }}">Mantenimientos</span>
+                        </a>
+                    </li>
+                @endcan
                 {{-- <li class="overflow-hidden">
                     <button
                         class="list-button py-2 w-full flex items-center text-slate-400 hover:text-white hover:bg-slate-300/30">
@@ -100,91 +165,29 @@
                         @endcan
                     </ul>
                 </li> --}}
-                <li class="overflow-hidden">
-                    <button
-                        class="list-button py-2 w-full flex items-center text-slate-400 hover:text-white hover:bg-slate-300/30">
-                        <img src="{{ asset('icons/chip.svg') }}" alt="" class="px-4 mr-1">
-                        <span class="grow text-left">Equipos</span>
-                        <img src="{{ asset('icons/chevron-right.svg') }}" alt="" class="px-4 icon_arrow">
-                    </button>
-                    <ul class="h-0 pl-10 show_menu">
-                        @can('marca')
-                            <li class="border-l-2">
-                                <a href="{{ route('marcas.index') }}" wire:navigate class="cursor-pointer">
-                                    <span
-                                        class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('marcas.index') ? 'text-white bg-slate-300/30' : '' }}">Marcas</span>
-                                </a>
-                            </li>
-                        @endcan
-                        @can('categoria')
-                        <li class="border-l-2">
-                            <a href="{{ route('categorias.index') }}" wire:navigate class="cursor-pointer">
-                                <span
-                                    class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30">Categorias</span>
-                            </a>
-                        </li>
-                        @endcan
-                        {{-- @can('responsable')
-                            <li class="border-l-2">
-                                <a href="{{ route('responsables.index') }}" wire:navigate class="cursor-pointer ">
-                                    <span
-                                        class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('encargado.index') ? 'text-white bg-slate-300/30' : '' }}">Responsables</span>
-                                </a>
-                            </li>
-                        @endcan --}}
-                        @can('componente')
-                            <li class="border-l-2">
-                                <a href="{{ route('componentes.index') }}" wire:navigate class="cursor-pointer ">
-                                    <span
-                                        class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('componente.index') ? 'text-white bg-slate-300/30' : '' }}">Componente</span>
-                                </a>
-                            </li>
-                        @endcan
-                        @can('equipo')
-                            <li class="border-l-2">
-                                <a href="{{ route('equipos.index') }}" wire:navigate class="cursor-pointer ">
-                                    <span
-                                        class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('equipo.index') ? 'text-white bg-slate-300/30' : '' }}">Equipos</span>
-                                </a>
-                            </li>
-                        @endcan
-                        @can('equipo')
-                            <li class="border-l-2">
-                                <a href="{{ route('asignaciones.index') }}" wire:navigate class="cursor-pointer ">
-                                    <span
-                                        class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('asignaciones.index') ? 'text-white bg-slate-300/30' : '' }}">Asignaciones</span>
-                                </a>
-                            </li>
-                        @endcan
-                    </ul>
+
+
+                <li class="">
+                    <span class="block px-4 text-slate-400 text-sm">Equipamiento asignado</span>
+                </li>
+                <li class="">
+                    <a href="{{ route('equipamiento.index') }}" wire:navigate class="cursor-pointer flex px-4 py-2">
+                        <img src="{{ asset('icons/chip.svg')}}" alt="" class="pr-2">
+                        <span
+                            class="block text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('equipamiento.index') ? 'text-white bg-slate-300/30' : '' }}">
+                            Equipamiento</span>
+                    </a>
                 </li>
 
-                {{-- <li class="overflow-hidden">
-                    <button
-                        class="list-button py-2 w-full flex items-center text-slate-400 hover:text-white hover:bg-slate-300/30">
-                        <img src="{{ asset('icons/news.svg') }}" alt="" class="px-4 mr-1">
-                        <span class="grow text-left">Noticias</span>
-                        <img src="{{ asset('icons/chevron-right.svg') }}" alt="" class="px-4 icon_arrow">
-                    </button>
-                    <ul class="h-0 pl-10 show_menu">
-                        @can('categoria index')
-                        <li class="border-l-2">
-                            <a href="{{ route('categorias.index') }}" wire:navigate class="cursor-pointer">
-                                <span
-                                    class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30">Categorias</span>
-                            </a>
-                        </li>
-                        @endcan
-                        @can('noticia index')
-                        <li class="border-l-2">
-                            <a href="{{ route('noticias.index') }}" wire:navigate class="cursor-pointer ">
-                                <span
-                                    class="block px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-300/30">Noticias</span>
-                            </a>
-                        </li>
-                        @endcan
-                    </ul>
-                </li> --}}
+                <li class="">
+                    <a href="{{ route('solicitudes.index') }}" wire:navigate class="cursor-pointer flex px-4 py-2">
+                        <img src="{{ asset('icons/reportes.svg')}}" alt="" class="pr-2">
+                        <span
+                            class="block text-slate-400 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('solicitudes.index') ? 'text-white bg-slate-300/30' : '' }}">Reportes
+                            enviados</span>
+                    </a>
+                </li>
+
             </ul>
         </div>
 
@@ -192,7 +195,8 @@
             <div
                 class="bg-slate-50 dark:bg-gray-900 sticky z-10 p-4 top-0 left-0 flex items-center justify-between border-b-2">
                 <div class="flex">
-                    <img src="{{ asset('icons/menu.svg') }}" alt="" class="block cursor-pointer toogle_menu ">
+                    <img src="{{ asset('icons/menu.svg') }}" alt=""
+                        class="block cursor-pointer toogle_menu ">
 
                     <h2 class="ml-4">{{ $header }}</h2>
                 </div>

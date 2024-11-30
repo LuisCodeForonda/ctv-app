@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Carbon\Carbon;
 
 return new class extends Migration
 {
@@ -11,11 +12,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('responsable_equipos', function (Blueprint $table) {
+        Schema::create('user_equipos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('responsable_id')->nullable()->constrained('responsables')->cascadeOnUpdate()->nullOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained('users')->cascadeOnUpdate()->nullOnDelete();
             $table->foreignId('equipo_id')->nullable()->constrained('equipos')->cascadeOnUpdate()->nullOnDelete();
-            $table->timestamp('fecha_asignacion')->useCurrent();
+            $table->date('fecha_asignacion')->default(Carbon::now());
+            $table->timestamps();
         });
     }
 
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('responsable_equipos');
+        Schema::dropIfExists('user_equipos');
     }
 };

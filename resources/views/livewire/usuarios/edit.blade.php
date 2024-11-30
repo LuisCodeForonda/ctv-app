@@ -55,7 +55,7 @@ new #[Layout('layouts.app')] class extends Component {
             'enable' => $this->enabled,
         ]);
 
-        $this->usuario->perfil()->updateOrCreate([
+        $this->usuario->perfil()->update([
             'nombre' => $this->nombre,
             'direccion' => $this->direccion,
             'cargo' => $this->cargo,

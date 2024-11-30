@@ -6,6 +6,7 @@ use Livewire\WithPagination;
 use Illuminate\Support\Str;
 use App\Models\Equipo;
 use App\Models\Marca;
+use App\Models\Solicitud;
 
 new #[Layout('layouts.app')] class extends Component {
     use WithPagination;
@@ -16,10 +17,14 @@ new #[Layout('layouts.app')] class extends Component {
     public $show = false;
     public $showDelete = false;
     public $equipo;
-
+    public $reporteModal = false;
     //ordenar
     public $sortBy = 'created_at';
     public $sortDir = 'DESC';
+
+    //
+    public $descripcion;
+    public $prioridad;
 
     //funciones
     public function view($id)
@@ -46,6 +51,7 @@ new #[Layout('layouts.app')] class extends Component {
         $this->reset('equipo');
         $this->show = false;
         $this->showDelete = false;
+        $this->reporteModal = false;
     }
 
     public function setSortBy($sort)
@@ -63,28 +69,51 @@ new #[Layout('layouts.app')] class extends Component {
         $this->resetPage();
     }
 
+    public function reportar($id){
+        $this->reporteModal = true;
+        $this->equipo = Equipo::findOrFail($id);
+
+    }
+
+    public function save()
+    {
+
+        $this->validate([
+            'descripcion' => 'required|min:3|max:400',
+            'prioridad' => 'required|numeric|min:1|max:3',
+        ]);
+
+        Solicitud::create([
+            'descripcion' => $this->descripcion,
+            'prioridad' => $this->prioridad,
+            'equipo_id' => $this->equipo->id,
+            'user_id' => Auth::user()->id,
+        ]);
+
+        return $this->redirect('/equipamiento', navigate: true);
+    }
+
     public function with()
     {
         return [
-            'data' => Equipo::where('descripcion', 'LIKE', '%' . $this->search . '%')
-                ->orderBy($this->sortBy, $this->sortDir)
-                ->paginate($this->paginate),
+            'data' => Auth::user()->equipos,
+            // 'data' => Equipo::where('descripcion', 'LIKE', '%' . $this->search . '%')
+            //     ->orderBy($this->sortBy, $this->sortDir)
+            //     ->paginate($this->paginate),
         ];
     }
 }; ?>
 
 <div>
     @slot('header')
-        <h1 class="font-bold">Equipos</h1>
+        <h1 class="font-bold">Equipamiento</h1>
     @endslot
 
     @if ($data->isEmpty())
         <div class="text-center mt-8">
             <p class="mb-4 text-2xl">Aún no hay equipos</p>
-            <x-primary-button href="{{ route('equipos.create') }}" wire:navigate>Nuevo</x-primary-button>
         </div>
     @else
-        <x-primary-button href="{{ route('equipos.create') }}" wire:navigate>Nuevo</x-primary-button>
 
         <div class="flex flex-row justify-between items-center py-2">
             <div class="flex items-center w-64 max-w-sm">
@@ -114,13 +143,14 @@ new #[Layout('layouts.app')] class extends Component {
                                 d="m1 1 4 4 4-4" />
                         </svg>
                     </button>
-    
+
                     <!-- Dropdown menu -->
                     <div x-show="dropdown"
                         class="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                            aria-labelledby="dropdownDefaultButton">
                             <li>
-                                <a x-on:click="dropdown = !dropdown" href="{{ route('equipos.export', 'excel')}}"
+                                <a x-on:click="dropdown = !dropdown" href="{{ route('equipos.export', 'excel') }}"
                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">excel</a>
                             </li>
                             <li>
@@ -128,10 +158,10 @@ new #[Layout('layouts.app')] class extends Component {
                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">pdf</a>
                             </li>
                             <li>
-                                <a x-on:click="dropdown = !dropdown" href="{{ route('equipos.export', 'csv')}}"
+                                <a x-on:click="dropdown = !dropdown" href="{{ route('equipos.export', 'csv') }}"
                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">csv</a>
                             </li>
-    
+
                         </ul>
                     </div>
                 </div>
@@ -146,7 +176,7 @@ new #[Layout('layouts.app')] class extends Component {
                     </select>
                 </div>
             </div>
-           
+
 
         </div>
 
@@ -198,16 +228,9 @@ new #[Layout('layouts.app')] class extends Component {
                                     Show
                                 </button>
 
-                                <a href="{{ route('equipos.show', $item->slug) }}" wire:navigate
-                                    class="font-medium text-gray-600 dark:text-gray-500 hover:underline">Info</a>
+                                <button wire:click="reportar({{ $item->id }})"
+                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Notificar falla</button>
 
-                                <a href="{{ route('equipos.edit', $item) }}" wire:navigate
-                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
-
-                                <button wire:click="destroy({{ $item->id }})"
-                                    class="font-medium text-red-500 dark:text-red-500 hover:underline">
-                                    Eliminar
-                                </button>
                             </td>
                         </tr>
                     @endforeach
@@ -215,56 +238,58 @@ new #[Layout('layouts.app')] class extends Component {
 
             </table>
             <div class="py-2">
-                {{ $data->links() }}
+                
             </div>
         </div>
     @endif
 
-    @if ($show)
-        <x-modal-show title="Detalle del marca">
-            <strong>Descripcion</strong>
-            <p>{{ $equipo->descripcion }}</p>
-            @if ($equipo->observaciones)
-                <strong>Observaciones</strong>
-                <p>{{ $equipo->observaciones }}</p>
-            @endif
-            @if ($equipo->modelo)
-                <strong>Modelo</strong>
-                <p>{{ $equipo->modelo }}</p>
-            @endif
-            @if ($equipo->serie)
-                <strong>Serie</strong>
-                <p>{{ $equipo->serie }}</p>
-            @endif
-            @if ($equipo->cantidad)
-                <strong>cantidad</strong>
-                <p>{{ $equipo->cantidad }}</p>
-            @endif
 
-            <strong>estado</strong>
-            <p>
-                @if ($equipo->estado == 1)
-                    Stand by
-                @elseif($equipo->estado == 2)
-                    Operativo
-                @elseif($equipo->estado == 3)
-                    Mantenimiento
-                @elseif($equipo->estado == 4)
-                    Malo
-                @endif
-            </p>
+    @if ($reporteModal)
+        <x-modal-show title="Generar reporte">
+            
+            <form action="" wire:submit="save">
+                <div class="grid grid-cols-1 gap-4 mb-4">
+                    <div>
+                        <label for="descripcion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Descripcion</label>
+                        <p>{{ $equipo->descripcion}}</p>
+                    </div>
+                    <div>
+                        <label for="descripcion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Serie</label>
+                        <p>{{ $equipo->serie}}</p>
+                    </div>
+                    <div>
+                        <label for="descripcion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Modelo</label>
+                        <p>{{ $equipo->modelo}}</p>
+                    </div>
 
+                    <hr>
+                    <h4>Estado del equipo</h4>
+                    <div>
+                        <label for="descripcion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Descripcion</label>
+                        <textarea id="descripcion" wire:model="descripcion" name="descripcion" rows="4"
+                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="Write your thoughts here..."></textarea>
+                        <x-input-error :messages="$errors->get('descripcion')" class="mt-2" />
+                    </div>
 
-            @if ($equipo->marca)
-                <strong>marca</strong>
-                <p>{{ $equipo->marca->nombre }}</p>
-            @endif
+                    <div>
+                        <label for="prioridad" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prioridad</label>
+                        <select id="prioridad" wire:model="prioridad" name="prioridad"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option value="">Selecciona un opcion</option>
+                            @foreach (config('constants.prioridad') as $key => $value)
+                                <option value="{{ $key }}" @selected($prioridad == $key)>{{ $value }}</option>
+                            @endforeach
+                        </select>
+                        <x-input-error :messages="$errors->get('prioridad')" class="mt-2" />
+                    </div>
+                </div>
+                <div class="flex justify-end gap-2">
+            
+                    <x-secondary-button href="{{ route('equipamiento.index') }}" wire:navigate>Cancelar</x-secondary-button>
+                    <x-primary-button>Guardar</x-primary-button>
+                </div>
+            </form>
         </x-modal-show>
-    @endif
-
-    @if ($showDelete)
-        <x-modal-destroy-confirm>
-            <p class="mb-4">{{ $equipo->descripcion }}</p>
-        </x-modal-destroy-confirm>
     @endif
 </div>

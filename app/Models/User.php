@@ -44,19 +44,24 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    
-    public function noticias(){
-        return $this->hasMany(Noticia::class);
-    }
 
     //relacion de uno a uno
     public function perfil(){
-        return $this->hasOne(UserProfile::class);
+        return $this->hasOne(UserProfile::class, 'user_id');
+    }
+
+    //uno a muchos
+    public function asignados(){
+        return $this->hasMany(UserEquipo::class);
     }
 
     //relacion de muchos a muchos
     public function equipos(){
-        return $this->belongsToMany(Equipo::class);
+        return $this->belongsToMany(Equipo::class, 'user_equipos');
+    }
+
+    public function solicitudes(){
+        return $this->hasMany(Solicitud::class);
     }
 
 }

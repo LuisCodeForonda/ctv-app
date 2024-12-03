@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ComponenteController;
 use App\Http\Controllers\EquipoController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\MarcasController;
 use App\Http\Controllers\PdfController;
@@ -25,7 +26,7 @@ Route::view('/', 'welcome');
 
 Route::middleware(['auth'])->group(function () {
 
-    Route::view('dashboard', 'dashboard')->middleware(['verified'])->name('dashboard');
+    Route::get('dashboard', [HomeController::class, 'index'])->middleware(['verified'])->name('dashboard');
 
     Route::view('profile', 'profile')->name('profile');
 
@@ -56,6 +57,7 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('/equipos/create', 'equipos.create')->middleware(['can:equipo'])->name('equipos.create');
     Volt::route('/equipos/{slug}', 'equipos.show')->middleware(['can:equipo'])->name('equipos.show');
     Volt::route('/equipos/{equipo}/edit', 'equipos.edit')->middleware(['can:equipo'])->name('equipos.edit');
+    Route::get('/equipos/{equipo}/pdf', [PdfController::class, 'equipo'])->middleware(['can:equipo'])->name('equipos.pdf');
     Route::get('/equipos/export/{format}', [EquipoController::class, 'export'])->middleware(['can:equipo'])->name('equipos.export');
 
     Volt::route('/componentes', 'componentes.index')->middleware(['can:componente'])->name('componentes.index');
@@ -71,6 +73,9 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('/mantenimientos', 'mantenimientos.index')->middleware(['can:asignacion'])->name('mantenimientos.index');
     Volt::route('/mantenimientos/create', 'mantenimientos.create')->middleware(['can:asignacion'])->name('mantenimientos.create');
     Route::get('/mantenimientos/{mantenimiento}/pdf', [PdfController::class, 'mantenimiento'])->middleware(['can:asignacion'])->name('mantenimientos.pdf');
+
+    Volt::route('/reportes', 'reportes.index')->middleware(['can:reporte'])->name('reportes.index');
+    Route::get('/reportes/{reporte}/pdf', [PdfController::class, 'reporte'])->middleware(['can:reporte'])->name('reportes.pdf');
 
     Volt::route('/equipamiento', 'equipamiento.index')->middleware(['can:equipamiento'])->name('equipamiento.index');
 

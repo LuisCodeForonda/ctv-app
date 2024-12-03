@@ -6,6 +6,7 @@ use Livewire\WithPagination;
 use Illuminate\Support\Str;
 use App\Models\Equipo;
 use App\Models\Marca;
+use App\Models\Solicitud;
 
 new #[Layout('layouts.app')] class extends Component {
     use WithPagination;
@@ -17,63 +18,43 @@ new #[Layout('layouts.app')] class extends Component {
     public $showDelete = false;
     public $equipo;
 
+    //variables del modelo
+    public $estado = 0;
+
     //ordenar
     public $sortBy = 'created_at';
     public $sortDir = 'DESC';
-
-    //funciones
-    public function view($id)
-    {
-        $this->equipo = Equipo::findOrFail($id);
-        $this->show = true;
-    }
-
-    public function destroy($id)
-    {
-        $this->equipo = Equipo::findOrFail($id);
-        $this->showDelete = true;
-    }
-
-    public function confirmDestroy()
-    {
-        $this->equipo->delete();
-        session()->flash('message', 'Eliminado Exitosamente.');
-        $this->showDelete = false;
-    }
-
-    public function closeModal()
-    {
-        $this->reset('equipo');
-        $this->show = false;
-        $this->showDelete = false;
-    }
-
-    public function setSortBy($sort)
-    {
-        if ($this->sortBy === $sort) {
-            $this->sortDir = $this->sortDir == 'ASC' ? 'DESC' : 'ASC';
-            return;
-        }
-        $this->sortBy = $sort;
-        $this->sortDir = 'DESC';
-    }
 
     public function updatedSearch()
     {
         $this->resetPage();
     }
 
+    public function updatedEstado()
+    {
+        return dump('hello');
+    }
+
+    public function cambiar($id, $fase)
+    {
+        $solicitud = Solicitud::findOrFail($id);
+
+        $solicitud->update([
+            'estado' => $fase,
+        ]);
+    }
+
     public function with()
     {
         return [
-            'data' => Auth::user()->solicitudes,
+            'data' => Solicitud::latest()->get(),
         ];
     }
 }; ?>
 
 <div>
     @slot('header')
-        <h1 class="font-bold">Solicitudes</h1>
+        <h1 class="font-bold">Solicitudes de mantenimiento</h1>
     @endslot
 
     @if ($data->isEmpty())
@@ -116,7 +97,7 @@ new #[Layout('layouts.app')] class extends Component {
                         <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
                             aria-labelledby="dropdownDefaultButton">
                             <li>
-                                <a x-on:click="dropdown = !dropdown" href=""
+                                <a x-on:click="dropdown = !dropdown" href="{{ route('equipos.export', 'excel') }}"
                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">excel</a>
                             </li>
                             <li>
@@ -124,7 +105,7 @@ new #[Layout('layouts.app')] class extends Component {
                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">pdf</a>
                             </li>
                             <li>
-                                <a x-on:click="dropdown = !dropdown" href=""
+                                <a x-on:click="dropdown = !dropdown" href="{{ route('equipos.export', 'csv') }}"
                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">csv</a>
                             </li>
 
@@ -146,7 +127,7 @@ new #[Layout('layouts.app')] class extends Component {
 
         </div>
 
-        <div class="relative overflow-x-auto">
+        <div class="relative">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
@@ -163,10 +144,13 @@ new #[Layout('layouts.app')] class extends Component {
                             Modelo
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Serie
+                            Solicitante
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Estado de la solicitud
+                            Prioridad
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Estado
                         </th>
                         <th scope="col" class="px-6 py-3">
                             Acciones
@@ -191,18 +175,64 @@ new #[Layout('layouts.app')] class extends Component {
                                 {{ $item->equipo->modelo }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ $item->equipo->serie }}
+                                {{ $item->user->perfil->nombre }}
                             </td>
-                            <td class="px-6 py-4 {{ 'text-' . config('constants.colores')[$item->estado] . '-600' }}">
-                                {{ config('constants.fases')[$item->estado] }}
+                            <td class="px-6 py-4">
+                                {{ config('constants.prioridad')[$item->prioridad] }}
+                            </td>
+                            <td
+                                class="px-6 py-4 {{ 'text-' . config('constants.colores')[$item->prioridad] . '-600' }}">
+                                {{-- {{ config('constants.fases')[$item->estado] }} --}}
+
+                                {{-- <select id="countries" wire:click="cambiar({{ $item->id }})"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    @foreach (config('constants.fases') as $key => $value)
+                                        <option value="{{ $key }}" @selected($item->estado == $key)>
+                                            {{ $value }}
+                                        </option>
+                                    @endforeach
+                                </select> --}}
+
+
+                                <div class="relative" x-data="{ dropdown: false }" x-on:click.away="dropdown = false">
+                                    <button x-on:click="dropdown = !dropdown"
+                                        class=" border-2 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                        type="button">{{ config('constants.fases')[$item->estado] }}
+                                        <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2" d="m1 1 4 4 4-4" />
+                                        </svg>
+                                    </button>
+
+                                    <!-- Dropdown menu -->
+                                    <div x-show="dropdown"
+                                        class="absolute z-20 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                                            aria-labelledby="dropdownDefaultButton">
+                                            <li>
+                                                <a x-on:click="dropdown = !dropdown" wire:click="cambiar({{ $item->id }}, {{ 1 }})"
+                                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">pendiente</a>
+                                            </li>
+                                            <li>
+                                                <a x-on:click="dropdown = !dropdown" wire:click="cambiar({{ $item->id }}, {{ 2 }})"
+                                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">en
+                                                    proceso</a>
+                                            </li>
+                                            <li>
+                                                <a x-on:click="dropdown = !dropdown" wire:click="cambiar({{ $item->id }}, {{ 3 }})"
+                                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">completado</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
 
                             </td>
                             <td class="px-6 py-4 flex gap-4">
-                                <button wire:click="view({{ $item->id }})"
+                                <a href="{{ route('reportes.pdf', $item->id)}}"
                                     class="font-medium text-yellow-500 dark:text-yellow-500 hover:underline">
-                                    imprimir
-                                </button>
-
+                                    imprimir solicitud
+                                </a>
                             </td>
                         </tr>
                     @endforeach
@@ -211,4 +241,5 @@ new #[Layout('layouts.app')] class extends Component {
             </table>
         </div>
     @endif
+
 </div>

@@ -16,10 +16,13 @@ new #[Layout('layouts.app')] class extends Component {
     public $descripcionDetalle;
     public $costo = 0;
     public $observacion;
+    public $equipo;
 
     //variables del funcionalidad grafica
     public $isDetalle = false;
     public $detalle;
+
+    public $search = '';
 
     public function mount()
     {
@@ -40,7 +43,6 @@ new #[Layout('layouts.app')] class extends Component {
         ]);
 
         foreach ($this->detalle as $value) {
-            # code...
             $value->update([
                 'mantenimiento_id' => $mantenimiento->id,
             ]);
@@ -75,9 +77,10 @@ new #[Layout('layouts.app')] class extends Component {
         $this->isDetalle = true;
     }
 
-    public function extraer($id){
+    public function extraer($id)
+    {
         $detalle = DetalleMantenimiento::findOrfail($id);
-        if($detalle){
+        if ($detalle) {
             $detalle->delete();
         }
     }
@@ -87,11 +90,17 @@ new #[Layout('layouts.app')] class extends Component {
         $this->isDetalle = false;
     }
 
+    public function buscar()
+    {
+        $this->equipo = Equipo::findOrfail($this->search);
+        $this->equipo_id = $this->equipo->id;
+    }
+
     public function with()
     {
         return [
             'data' => Equipo::all(),
-            $this->detalle = DetalleMantenimiento::where('mantenimiento_id', '=', '')->orWhereNull('mantenimiento_id')->get(),
+            ($this->detalle = DetalleMantenimiento::where('mantenimiento_id', '=', '')->orWhereNull('mantenimiento_id')->get()),
         ];
     }
 }; ?>
@@ -101,21 +110,49 @@ new #[Layout('layouts.app')] class extends Component {
         <h1 class="font-bold">Mantenimiento > create</h1>
     @endslot
 
+    <div class="max-w-96 flex gap-4">
+        <div class="flex items-center w-64 max-w-sm">
+            <label for="simple-search" class="sr-only">Buscar</label>
+            <div class="relative w-full">
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M3 5v10M3 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm12 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm0 0V6a3 3 0 0 0-3-3H9m1.5-2-2 2 2 2" />
+                    </svg>
+                </div>
+                <input type="text" wire:model="search" id="simple-search"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Codigo de equipo..." />
+            </div>
+        </div>
+
+        <x-primary-button wire:click="buscar">Buscar</x-primary-button>
+    </div>
+
+    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+        <a href="#">
+            <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">Detalles del equipo
+            </h5>
+        </a>
+        <div class="grid grid-cols-3 gap-2">
+            <p class="font-normal text-gray-700 dark:text-gray-400"><strong>email: </strong>
+                {{ $equipo->descripcion ?? '' }}</p>
+            <p class="font-normal text-gray-700 dark:text-gray-400"><strong>observacion: </strong>
+                {{ $equipo->observacion ?? '' }}</p>
+            <p class="font-normal text-gray-700 dark:text-gray-400"><strong>modelo: </strong>
+                {{ $equipo->modelo ?? '' }}</p>
+            <p class="font-normal text-gray-700 dark:text-gray-400"><strong>serie: </strong>
+                {{ $equipo->serie ?? '' }}</p>
+            <p class="font-normal text-gray-700 dark:text-gray-400"><strong>estado: </strong></p>
+        </div>
+    </div>
+
     <form class='mx-auto p-4 border-1 border-gray-200 shadow-md rounded-md bg-white dark:bg-gray-800'>
         <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
-            <div>
-                <label for="equipo_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Selecciona un
-                    equipo</label>
-                <select id="equipo_id" wire:model="equipo_id" name="equipo_id"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                    <option value="">Escoge una equipo</option>
-                    @foreach ($data as $equipo)
-                        <option value="{{ $equipo->id }}">{{ Str::limit($equipo->descripcion, 40) }} -
-                            {{ $equipo->serie }} {{ $equipo->modelo }}</option>
-                    @endforeach
-                </select>
-                <x-input-error :messages="$errors->get('equipo_id')" class="mt-2" />
-            </div>
+            
+
             <hr>
             <div class="grid grid-cols-2 gap-4">
                 <div>

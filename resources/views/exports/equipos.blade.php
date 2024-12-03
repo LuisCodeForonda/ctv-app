@@ -10,7 +10,6 @@
         <th>Estado</th>
         <th>Area</th>
         <th>Ubicacion</th>
-        <th>Responsable</th>
         <th>Marca</th>
         <th>Fecha creacion</th>
     </tr>
@@ -27,7 +26,6 @@
             <td>{{ $item->estado }}</td>
             <td>{{ $item->area }}</td>
             <td>{{ $item->ubicacion }}</td>
-            <td>{{ $item->responsable->nombre }}</td>
             <td>{{ $item->marca->nombre }}</td>
             <td>{{ $item->created_at }}</td>
         </tr>

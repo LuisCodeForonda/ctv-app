@@ -55,13 +55,15 @@ class User extends Authenticatable
         return $this->hasMany(UserEquipo::class);
     }
 
+    public function solicitudes(){
+        return $this->hasMany(Solicitud::class);
+    }
+
     //relacion de muchos a muchos
     public function equipos(){
         return $this->belongsToMany(Equipo::class, 'user_equipos');
     }
 
-    public function solicitudes(){
-        return $this->hasMany(Solicitud::class);
-    }
+    
 
 }

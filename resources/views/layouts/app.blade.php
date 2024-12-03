@@ -15,6 +15,7 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     {{-- <link rel="stylesheet" href="{{ asset('build\assets\app-01043519.css')}}"> --}}
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <style>
         .box {
             width: 3.5rem;
@@ -47,7 +48,7 @@
             <!-- logo -->
 
             <div class="text-center">
-                <a href="dashboard" wire:navigate class="block text-nowrap py-4 px-1">
+                <a href="dashboard" class="block text-nowrap py-4 px-1">
                     <img src="{{ asset('images/logo.jpg') }}" alt="" class="h-10 w-12 inline-block mr-2">
                     <h1 class="inline-block align-middle text-4xl font-bold text-white">SISTEC</h1>
                 </a>
@@ -135,6 +136,16 @@
                             <img src="{{ asset('icons/mantenimiento.svg')}}" alt="" class="pr-2">
                             <span
                                 class="block">Mantenimientos</span>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('equipo')
+                    <li class="">
+                        <a href="{{ route('reportes.index') }}" wire:navigate class="cursor-pointer flex px-4 py-2 text-slate-200 hover:text-white hover:bg-slate-300/30 {{ request()->routeIs('reportes.index') ? 'bg-slate-300/30' : '' }}">
+                            <img src="{{ asset('icons/mantenimiento.svg')}}" alt="" class="pr-2">
+                            <span
+                                class="block">Reportes</span>
                         </a>
                     </li>
                 @endcan

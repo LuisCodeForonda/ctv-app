@@ -25,6 +25,10 @@ class Equipo extends Model
         return $this->hasMany(Solicitud::class);
     }
 
+    public function componentes(){
+        return $this->hasMany(Componente::class);
+    }
+
     public function asignado(){
         return $this->hasMany(UserEquipo::class);
     }

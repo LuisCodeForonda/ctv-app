@@ -64,6 +64,7 @@
                     {{ $mantenimiento->descripcion }}
                 </p>
                 
+                <h4>Tecnico</h4>
                 <p><strong>Realizado en fecha:</strong> {{ $mantenimiento->created_at }}, <strong>por:</strong> {{ $mantenimiento->user->perfil->nombre }}</p>
                 <div class="">
                     <h5>Detalle del mantenimiento</h5>

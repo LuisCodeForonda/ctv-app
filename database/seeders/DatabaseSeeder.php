@@ -41,6 +41,7 @@ class DatabaseSeeder extends Seeder
         Permission::create(['name' => 'equipo', 'category' => 'Equipos'])->syncRoles([$role]);
         Permission::create(['name' => 'categoria', 'category' => 'Equipos'])->syncRoles([$role]);
         Permission::create(['name' => 'asignacion', 'category' => 'Equipos'])->syncRoles([$role]);
+        Permission::create(['name' => 'reporte', 'category' => 'Equipos'])->syncRoles([$role]);
 
         Permission::create(['name' => 'equipamiento', 'category' => 'Usuario'])->syncRoles([$role]);
         Permission::create(['name' => 'solititud', 'category' => 'Usuario'])->syncRoles([$role]);

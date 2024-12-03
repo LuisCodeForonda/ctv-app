@@ -14,4 +14,8 @@ class Componente extends Model
     public function marca(){
         return $this->belongsTo(Marca::class);
     }
+
+    public function equipo(){
+        return $this->belongsTo(Equipo::class);
+    }
 }

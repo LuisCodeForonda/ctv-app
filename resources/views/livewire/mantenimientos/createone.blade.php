@@ -9,6 +9,7 @@ use App\Models\DetalleMantenimiento;
 
 new #[Layout('layouts.app')] class extends Component {
     //variables
+    public Equipo $equipo;
     public $descripcion;
     public $equipo_id;
 
@@ -16,7 +17,6 @@ new #[Layout('layouts.app')] class extends Component {
     public $descripcionDetalle;
     public $costo = 0;
     public $observacion;
-    public $equipo;
 
     //variables del funcionalidad grafica
     public $isDetalle = false;
@@ -24,21 +24,22 @@ new #[Layout('layouts.app')] class extends Component {
 
     public $search = '';
 
-    public function mount()
+    public function mount($slug)
     {
+        $this->equipo = Equipo::where('slug', $slug)->first();
         $this->detalle = DetalleMantenimiento::where('mantenimiento_id', '=', '')->orWhereNull('mantenimiento_id')->get();
     }
 
     public function save()
     {
+    
         $this->validate([
             'descripcion' => 'required|string|max:500',
-            'equipo_id' => 'required',
         ]);
 
         $mantenimiento = Mantenimiento::create([
             'descripcion' => $this->descripcion,
-            'equipo_id' => $this->equipo_id,
+            'equipo_id' => $this->equipo->id,
             'user_id' => Auth::user()->id,
         ]);
 
@@ -48,7 +49,7 @@ new #[Layout('layouts.app')] class extends Component {
             ]);
         }
 
-        return $this->redirect('/mantenimientos', navigate: true);
+        return $this->redirect('/equipos', navigate: true);
     }
 
     public function guardarDetalle()
@@ -56,7 +57,7 @@ new #[Layout('layouts.app')] class extends Component {
         $this->validate([
             'tipo' => 'required|integer',
             'descripcionDetalle' => 'required|max:200',
-            'costo' => 'required|decimal:0,2',
+            'costo' => 'required|integer',
             'observacion' => 'max:200',
         ]);
 
@@ -110,25 +111,6 @@ new #[Layout('layouts.app')] class extends Component {
         <h1 class="font-bold">Mantenimiento > create</h1>
     @endslot
 
-    <div class="max-w-96 flex gap-4 mb-4">
-        <div class="flex items-center w-64 max-w-sm">
-            <label for="simple-search" class="sr-only">Buscar</label>
-            <div class="relative w-full">
-                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 5v10M3 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm12 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm0 0V6a3 3 0 0 0-3-3H9m1.5-2-2 2 2 2" />
-                    </svg>
-                </div>
-                <input type="text" wire:model="search" id="simple-search"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Codigo de equipo..." />
-            </div>
-        </div>
-
-        <x-primary-button wire:click="buscar">Buscar</x-primary-button>
-    </div>
 
     <div class="p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
         <a href="#">
@@ -136,25 +118,24 @@ new #[Layout('layouts.app')] class extends Component {
             </h5>
         </a>
         <div class="grid grid-cols-3 gap-2">
-            <p class="font-normal text-gray-700 dark:text-gray-400"><strong>Descripción: </strong>
+            <p class="font-normal text-gray-700 dark:text-gray-400"><strong>Descripcion: </strong>
                 {{ $equipo->descripcion ?? '' }}</p>
             <p class="font-normal text-gray-700 dark:text-gray-400"><strong>Observacion: </strong>
                 {{ $equipo->observacion ?? '' }}</p>
-            <p class="font-normal text-gray-700 dark:text-gray-400"><strong>modelo: </strong>
+            <p class="font-normal text-gray-700 dark:text-gray-400"><strong>Modelo: </strong>
                 {{ $equipo->modelo ?? '' }}</p>
-            <p class="font-normal text-gray-700 dark:text-gray-400"><strong>serie: </strong>
+            <p class="font-normal text-gray-700 dark:text-gray-400"><strong>Serie: </strong>
                 {{ $equipo->serie ?? '' }}</p>
-            <p class="font-normal text-gray-700 dark:text-gray-400"><strong>serietec: </strong>
-                {{ $equipo->serietec ?? '' }}</p>
+            <p class="font-normal text-gray-700 dark:text-gray-400"><strong>Estado: </strong>{{ config('constants.estados')[$equipo->estado] }}</p>
         </div>
     </div>
 
     <form class='mx-auto p-4 border-1 border-gray-200 shadow-md rounded-md bg-white dark:bg-gray-800'>
         <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
-
+            
 
             <hr>
-            <div class="grid grid-cols-1 gap-4">
+            <div class="grid grid-cols-2 gap-4">
                 <div>
                     <h2>Descripcion general del mantenimiento</h2>
                     <div>
@@ -258,15 +239,14 @@ new #[Layout('layouts.app')] class extends Component {
                     <div>
                         <label for="costo"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">costo</label>
-                        <input type="number" step="0.1" id="costo" wire:model="costo" name="costo"
+                        <input type="number" id="costo" wire:model="costo" name="costo"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                         <x-input-error :messages="$errors->get('costo')" class="mt-2" />
                     </div>
 
                     <div>
                         <label for="observacion"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Material
-                            utilizado</label>
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">observacion</label>
                         <textarea id="observacion" wire:model="observacion" name="observacion" rows="4"
                             class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             placeholder="Write your thoughts here..."></textarea>

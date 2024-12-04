@@ -11,6 +11,7 @@ use App\Models\Solicitud;
 new #[Layout('layouts.app')] class extends Component {
     use WithPagination;
 
+    public $solicitud;
     //variables de pagina
     public $paginate = 10;
     public $search = '';
@@ -25,15 +26,35 @@ new #[Layout('layouts.app')] class extends Component {
     public $sortBy = 'created_at';
     public $sortDir = 'DESC';
 
+
+    public function view($id)
+    {
+        $this->solicitud = Solicitud::findOrFail($id);
+        $this->show = true;
+    }
+
+    public function closeModal()
+    {
+        $this->show = false;
+        $this->showDelete = false;
+    }
+
+
     public function updatedSearch()
     {
         $this->resetPage();
     }
 
-    public function updatedEstado()
+    public function setSortBy($sort)
     {
-        return dump('hello');
+        if ($this->sortBy === $sort) {
+            $this->sortDir = $this->sortDir == 'ASC' ? 'DESC' : 'ASC';
+            return;
+        }
+        $this->sortBy = $sort;
+        $this->sortDir = 'DESC';
     }
+
 
     public function cambiar($id, $fase)
     {
@@ -47,7 +68,9 @@ new #[Layout('layouts.app')] class extends Component {
     public function with()
     {
         return [
-            'data' => Solicitud::latest()->get(),
+            'data' => Solicitud::where('descripcion', 'LIKE', '%' . $this->search . '%')
+                ->orderBy($this->sortBy, $this->sortDir)
+                ->paginate($this->paginate)
         ];
     }
 }; ?>
@@ -131,24 +154,21 @@ new #[Layout('layouts.app')] class extends Component {
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="px-6 py-3">
-                            Id
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Descripcion falla
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Descripcion equipo
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Modelo
-                        </th>
+                        @include('includes.table-sortable', [
+                            'name' => 'id',
+                            'displayName' => 'ID',
+                        ])
+                        @include('includes.table-sortable', [
+                            'name' => 'descripcion',
+                            'displayName' => 'Descripcion falla',
+                        ])
                         <th scope="col" class="px-6 py-3">
                             Solicitante
                         </th>
-                        <th scope="col" class="px-6 py-3">
-                            Prioridad
-                        </th>
+                        @include('includes.table-sortable', [
+                            'name' => 'prioridad',
+                            'displayName' => 'Prioridad',
+                        ])
                         <th scope="col" class="px-6 py-3">
                             Estado
                         </th>
@@ -167,12 +187,6 @@ new #[Layout('layouts.app')] class extends Component {
                             </th>
                             <td class="px-6 py-4">
                                 {{ Str::limit($item->descripcion, 30) }}
-                            </td>
-                            <td class="px-6 py-4">
-                                {{ Str::limit($item->equipo->descripcion, 30) }}
-                            </td>
-                            <td class="px-6 py-4">
-                                {{ $item->equipo->modelo }}
                             </td>
                             <td class="px-6 py-4">
                                 {{ $item->user->perfil->nombre }}
@@ -229,17 +243,48 @@ new #[Layout('layouts.app')] class extends Component {
 
                             </td>
                             <td class="px-6 py-4 flex gap-4">
+                                <button wire:click="view({{ $item->id }})"
+                                    class="font-medium text-blue-500 dark:text-blue-500 hover:underline">
+                                    mostrar
+                                </button>
                                 <a href="{{ route('reportes.pdf', $item->id)}}"
                                     class="font-medium text-yellow-500 dark:text-yellow-500 hover:underline">
-                                    imprimir solicitud
+                                    imprimir
                                 </a>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
-
+                <div class="py-2">
+                    {{ $data->links() }}
+                </div>
             </table>
         </div>
+    @endif
+
+    @if ($show)
+        <x-modal-show title="Detalle de la solicitud">
+            <strong>Descripcion</strong>
+            <p>{{ $solicitud->descripcion }}</p>
+            <span><strong>prioridad: </strong>{{ config('constants.prioridad')[$solicitud->prioridad] }}</span>
+            
+            <hr>
+            <strong>Datos del usuario</strong>
+            <p>{{ $solicitud->user->perfil->nombre }}</p>
+            <strong>Cargo</strong>
+            <p>{{ $solicitud->user->perfil->cargo }}</p>
+            <strong>Celular</strong>
+            <p>{{ $solicitud->user->perfil->celular }}</p>
+
+            <hr>
+            <strong>Datos del equipo</strong>
+            <p>{{ $solicitud->equipo->descripcion }}</p>
+            <strong>Modelo</strong>
+            <p>{{ $solicitud->equipo->modelo }}</p>
+            <strong>Serie</strong>
+            <p>{{ $solicitud->equipo->serie }}</p>
+
+        </x-modal-show>
     @endif
 
 </div>

@@ -30,7 +30,7 @@ new class extends Component {
         $this->isOpen = false;
         $this->show = false;
         $this->showDeleteModal = false;
-        $this->reset('tipo', 'descripcion', 'equipo_id', 'user_id', 'mantenimiento');
+        $this->reset('descripcion', 'equipo_id', 'user_id', 'mantenimiento');
         $this->resetValidation();
     }
 
@@ -42,7 +42,7 @@ new class extends Component {
     public function closeConfimModal()
     {
         $this->showDeleteModal = false;
-        $this->reset('tipo', 'descripcion', 'equipo_id', 'user_id', 'mantenimiento');
+        $this->reset('descripcion', 'equipo_id', 'user_id', 'mantenimiento');
     }
 
     public function save()
@@ -54,12 +54,15 @@ new class extends Component {
             'descripcion' => ['required', 'max:400'],
         ]);
 
-        Mantenimiento::updateOrCreate(['id' => $this->mantenimiento], [
-            'tipo' => $this->tipo,
-            'descripcion' => $this->descripcion,
-            'equipo_id' => $this->equipo->id,
-            'user_id' => Auth::user()->id,
-        ]);
+        Mantenimiento::updateOrCreate(
+            ['id' => $this->mantenimiento],
+            [
+                'tipo' => $this->tipo,
+                'descripcion' => $this->descripcion,
+                'equipo_id' => $this->equipo->id,
+                'user_id' => Auth::user()->id,
+            ],
+        );
 
         $this->closeModal();
     }
@@ -113,7 +116,7 @@ new class extends Component {
             </div>
         @else
             <div>
-                <x-primary-button wire:click="openModal">Nuevo</x-primary-button>
+                {{-- <x-primary-button wire:click="openModal">Nuevo</x-primary-button> --}}
 
 
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mt-2">
@@ -152,14 +155,8 @@ new class extends Component {
                                         class="font-medium text-yellow-500 dark:text-yellow-500 hover:underline">
                                         Show
                                     </button>
-                                    <button wire:click="edit({{ $item->id }})"
-                                        class="font-medium text-blue-500 dark:text-blue-500 hover:underline">
-                                        Imprimir reporte
-                                    </button>
-                                    {{-- <button wire:click="destroy({{ $item->id }})"
-                                        class="font-medium text-red-500 dark:text-red-500 hover:underline">
-                                        Eliminar
-                                    </button> --}}
+                                    <a href="{{ route('mantenimientos.pdf', $item->id)}}"
+                                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Imprimir reporte</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -176,7 +173,8 @@ new class extends Component {
                 @include('forms.mantenimiento-form')
                 <div class="flex justify-end gap-2">
                     <x-secondary-button wire:click="closeModal">Cancelar</x-secondary-button>
-                    <x-primary-button wire:click="save">{{ $mantenimiento ? 'Actualizar' : 'Guardar'}}</x-primary-button>
+                    <x-primary-button
+                        wire:click="save">{{ $mantenimiento ? 'Actualizar' : 'Guardar' }}</x-primary-button>
                 </div>
             </form>
         </x-modal-show>
@@ -189,17 +187,52 @@ new class extends Component {
     @endif
 
     @if ($show)
-        <x-modal-show title="Detalle del marca">
-            <strong>Descripcion</strong>
+        <x-modal-show title="Detalle del mantenimiento">
+            <strong>Descripcion general</strong>
             <p>{{ $mantenimiento->descripcion }}</p>
-            <strong>Tipo</strong>
-            <p>{{ config('constants.tipo')[$mantenimiento->tipo] }}</p>
             <strong>Tecnico</strong>
             <p>{{ $mantenimiento->user->name }}</p>
             <strong>Fecha</strong>
             <p>{{ $mantenimiento->created_at }}</p>
+
+            <strong>Detalle del mantenimiento</strong>
+            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                                Tipo
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Descripcion
+                            </th>
+                            <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                                Precio
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($mantenimiento->detalle as $item)
+                        <tr class="border-b border-gray-200 dark:border-gray-700">
+                            <td class="px-4 py-1 bg-gray-50 dark:bg-gray-800">
+                                {{ config('constants.tipo')[$item->tipo] }}
+                            </td>
+                            <th scope="row"
+                                class="px-4 py-1 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
+                                {{ $item->descripcion }}
+                            </th>
+                            <td class="px-4 py-1">
+                                {{ $item->costo }}
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+
+            
         </x-modal-show>
     @endif
 
 </div>
-

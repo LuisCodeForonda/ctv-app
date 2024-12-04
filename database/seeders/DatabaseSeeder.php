@@ -41,6 +41,7 @@ class DatabaseSeeder extends Seeder
         Permission::create(['name' => 'equipo', 'category' => 'Equipos'])->syncRoles([$role]);
         Permission::create(['name' => 'categoria', 'category' => 'Equipos'])->syncRoles([$role]);
         Permission::create(['name' => 'asignacion', 'category' => 'Equipos'])->syncRoles([$role]);
+        Permission::create(['name' => 'mantenimiento', 'category' => 'Equipos'])->syncRoles([$role]);
         Permission::create(['name' => 'reporte', 'category' => 'Equipos'])->syncRoles([$role]);
 
         Permission::create(['name' => 'equipamiento', 'category' => 'Usuario'])->syncRoles([$role]);
@@ -85,6 +86,6 @@ class DatabaseSeeder extends Seeder
         Marca::factory(100)->create();
         Categoria::factory(100)->create();
         Componente::factory(40)->create();
-        Equipo::factory(10)->create();
+        Equipo::factory(20)->create();
     }
 }

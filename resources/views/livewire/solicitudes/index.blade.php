@@ -6,10 +6,12 @@ use Livewire\WithPagination;
 use Illuminate\Support\Str;
 use App\Models\Equipo;
 use App\Models\Marca;
+use App\Models\Solicitud;
 
 new #[Layout('layouts.app')] class extends Component {
     use WithPagination;
 
+    public $solicitud;
     //variables de pagina
     public $paginate = 10;
     public $search = '';
@@ -26,19 +28,6 @@ new #[Layout('layouts.app')] class extends Component {
     {
         $this->equipo = Equipo::findOrFail($id);
         $this->show = true;
-    }
-
-    public function destroy($id)
-    {
-        $this->equipo = Equipo::findOrFail($id);
-        $this->showDelete = true;
-    }
-
-    public function confirmDestroy()
-    {
-        $this->equipo->delete();
-        session()->flash('message', 'Eliminado Exitosamente.');
-        $this->showDelete = false;
     }
 
     public function closeModal()
@@ -61,6 +50,19 @@ new #[Layout('layouts.app')] class extends Component {
     public function updatedSearch()
     {
         $this->resetPage();
+    }
+
+    public function destroy($id)
+    {
+        $this->solicitud = Solicitud::findOrFail($id);
+        $this->showDelete = true;
+    }
+
+    public function confirmDestroy()
+    {
+        $this->solicitud->delete();
+        session()->flash('message', 'Eliminado Exitosamente.');
+        $this->showDelete = false;
     }
 
     public function with()
@@ -195,14 +197,16 @@ new #[Layout('layouts.app')] class extends Component {
                             </td>
                             <td class="px-6 py-4 {{ 'text-' . config('constants.colores')[$item->estado] . '-600' }}">
                                 {{ config('constants.fases')[$item->estado] }}
-
                             </td>
                             <td class="px-6 py-4 flex gap-4">
-                                <button wire:click="view({{ $item->id }})"
+                                <a href="{{ route('solicitudes.pdf', $item->id)}}"
                                     class="font-medium text-yellow-500 dark:text-yellow-500 hover:underline">
-                                    imprimir
+                                    imprimir solicitud
+                                </a>
+                                <button wire:click="destroy({{ $item->id }})"
+                                    class="font-medium text-red-500 dark:text-red-500 hover:underline">
+                                    Cancelar
                                 </button>
-
                             </td>
                         </tr>
                     @endforeach
@@ -210,5 +214,11 @@ new #[Layout('layouts.app')] class extends Component {
 
             </table>
         </div>
+    @endif
+
+    @if ($showDelete)
+        <x-modal-destroy-confirm>
+            <p class="mb-4">{{ $solicitud->descripcion }}</p>
+        </x-modal-destroy-confirm>
     @endif
 </div>

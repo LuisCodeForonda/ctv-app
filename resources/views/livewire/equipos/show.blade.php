@@ -5,13 +5,16 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\Equipo;
+use App\Models\Mantenimiento;
+use App\Models\IntervaloMantenimiento;
 
 new #[Layout('layouts.app')] class extends Component {
     //objeto
     public Equipo $equipo;
+    public $mantenimiento;
 
     public $showInterval = false;
-    public $intervalo;
+    public $estado = 1;
     public $fecha_mantenimiento;
 
     public function mount($slug)
@@ -24,8 +27,30 @@ new #[Layout('layouts.app')] class extends Component {
         $this->showInterval = true;
     }
 
-    public function closeModal(){
+    public function closeModal()
+    {
         $this->showInterval = false;
+    }
+
+    public function guardarIntervalo()
+    {
+        $this->validate([
+            'fecha_mantenimiento' => 'required|date',
+        ]);
+
+        if ($this->equipo->intervalo === null) {
+            IntervaloMantenimiento::create([
+                'equipo_id' => $this->equipo->id,
+                'fecha_mantenimiento' => $this->fecha_mantenimiento,
+            ]);
+        } else {
+            $this->equipo->intervalo->update([
+                'equipo_id' => $this->equipo->id,
+                'fecha_mantenimiento' => $this->fecha_mantenimiento,
+            ]);
+        }
+
+        $this->closeModal();
     }
 
     public function with()
@@ -95,7 +120,10 @@ new #[Layout('layouts.app')] class extends Component {
                 <div class="flex items-center gap-4 pt-8">
                     <button wire:click="openModal"
                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Establecer
-                        intervalo</button>
+                        recordatorio</button>
+                    <a href="{{ route('mantenimientos.createone', $equipo->slug) }}" wire:navigate
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Registrar
+                        mantenimiento</a>
                     <a href="{{ route('equipos.pdf', $equipo->id) }}"
                         class="inline-block font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer">Generar
                         reporte</a>
@@ -141,15 +169,18 @@ new #[Layout('layouts.app')] class extends Component {
     <livewire:mantenimientos.equipo-componente :equipo="$equipo" />
 
     @if ($showInterval)
-        <x-modal-show title="Establecer intervalo de mantenimiento">
-           <form action="">
-            <div>
-                <label for="modelo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Modelo</label>
-                <input type="text" wire:model="modelo" id="modelo"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
-                <x-input-error :messages="$errors->get('modelo')" class="mt-2" />
-            </div>
-           </form>
+        <x-modal-show title="Establecer recordatorio de mantenimiento">
+            <form action="" class="">
+                <div class="mb-4">
+                    <label for="modelo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Fecha mantenimiento</label>
+                     <input type="date" wire:model="fecha_mantenimiento" id="modelo"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+
+                    <x-input-error :messages="$errors->get('fecha_mantenimiento')" class="mt-2" />
+                </div>
+                <x-primary-button wire:click.prevent="guardarIntervalo">Guardar</x-primary-button>
+            </form>
         </x-modal-show>
     @endif
 

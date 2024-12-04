@@ -16,6 +16,9 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     {{-- <link rel="stylesheet" href="{{ asset('build\assets\app-01043519.css')}}"> --}}
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+    {{-- <script src="{{ asset('build/assets/app-09f45680.js')}}"></script> --}}
+    
     <style>
         .box {
             width: 3.5rem;
@@ -48,7 +51,7 @@
             <!-- logo -->
 
             <div class="text-center">
-                <a href="dashboard" class="block text-nowrap py-4 px-1">
+                <a href="{{ route('dashboard') }}" class="block text-nowrap py-4 px-1">
                     <img src="{{ asset('images/logo.jpg') }}" alt="" class="h-10 w-12 inline-block mr-2">
                     <h1 class="inline-block align-middle text-4xl font-bold text-white">SISTEC</h1>
                 </a>

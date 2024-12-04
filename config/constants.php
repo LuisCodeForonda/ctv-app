@@ -32,6 +32,11 @@ return [
         3 => 'completado',
     ],
 
+    'recordatorio' => [
+        1 => 'pendiente',
+        2 => 'finalizado',
+    ],
+
     'prioridad' => [
         1 => 'baja',
         2 => 'media',

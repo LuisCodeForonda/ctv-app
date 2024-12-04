@@ -70,9 +70,10 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('/asignaciones/{user}/edit', 'asignaciones.edit')->middleware(['can:asignacion'])->name('asignaciones.edit');
     Route::get('/asignaciones/{user}/pdf', [PdfController::class, 'usuario_equipo'])->middleware(['can:asignacion'])->name('asignaciones.pdf');
 
-    Volt::route('/mantenimientos', 'mantenimientos.index')->middleware(['can:asignacion'])->name('mantenimientos.index');
-    Volt::route('/mantenimientos/create', 'mantenimientos.create')->middleware(['can:asignacion'])->name('mantenimientos.create');
-    Route::get('/mantenimientos/{mantenimiento}/pdf', [PdfController::class, 'mantenimiento'])->middleware(['can:asignacion'])->name('mantenimientos.pdf');
+    Volt::route('/mantenimientos', 'mantenimientos.index')->middleware(['can:mantenimiento'])->name('mantenimientos.index');
+    Volt::route('/mantenimientos/create', 'mantenimientos.create')->middleware(['can:mantenimiento'])->name('mantenimientos.create');
+    Volt::route('/mantenimientos/{slug}/create', 'mantenimientos.createone')->middleware(['can:mantenimiento'])->name('mantenimientos.createone');
+    Route::get('/mantenimientos/{mantenimiento}/pdf', [PdfController::class, 'mantenimiento'])->middleware(['can:mantenimiento'])->name('mantenimientos.pdf');
 
     Volt::route('/reportes', 'reportes.index')->middleware(['can:reporte'])->name('reportes.index');
     Route::get('/reportes/{reporte}/pdf', [PdfController::class, 'reporte'])->middleware(['can:reporte'])->name('reportes.pdf');
@@ -80,6 +81,7 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('/equipamiento', 'equipamiento.index')->middleware(['can:equipamiento'])->name('equipamiento.index');
 
     Volt::route('/solicitudes', 'solicitudes.index')->middleware(['can:solititud'])->name('solicitudes.index');
+    Route::get('/solicitudes/{solicitud}/pdf', [PdfController::class, 'solicitud'])->middleware(['can:solititud'])->name('solicitudes.pdf');
 });
 
 require __DIR__ . '/auth.php';

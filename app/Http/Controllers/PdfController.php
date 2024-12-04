@@ -39,4 +39,11 @@ class PdfController extends Controller
         $pdf = Pdf::loadView('pdf.equipo', compact('equipo'));
         return $pdf->stream();
     }
+
+    public function solicitud($id){
+        $solicitud = Solicitud::findOrFail($id);
+
+        $pdf = Pdf::loadView('pdf.solicitud', compact('solicitud'));
+        return $pdf->stream();
+    }
 }

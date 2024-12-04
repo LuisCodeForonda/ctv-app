@@ -5,10 +5,10 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+                <div class="p-6 text-gray-900 dark:text-gray-100 font-bold text-xl">
                     {{ __("Bienvenido") }} <span> {{ Auth::user()->perfil->nombre }}</span>
                 </div>
             </div>
@@ -19,7 +19,7 @@
                     <div class="flex-col items-center">
                         <div class="flex items-center mb-1">
                             <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white me-1">
-                                Website traffic</h5>
+                                Estado de los equipos</h5>
                             <svg data-popover-target="chart-info" data-popover-placement="bottom"
                                 class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -95,7 +95,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> 
                     </div>
                     <div class="flex justify-end items-center">
                         <button id="widgetDropdownButton" data-dropdown-toggle="widgetDropdown"
@@ -169,7 +169,7 @@
 
                 <div
                     class="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between">
-                    <div class="flex justify-between items-center pt-5">
+                    {{-- <div class="flex justify-between items-center pt-5">
                         <!-- Button -->
                         <button id="dropdownDefaultButton" data-dropdown-toggle="lastDaysdropdown"
                             data-dropdown-placement="bottom"
@@ -220,7 +220,7 @@
                                     stroke-width="2" d="m1 9 4-4-4-4" />
                             </svg>
                         </a>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

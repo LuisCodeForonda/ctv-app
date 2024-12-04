@@ -9,7 +9,7 @@ class IntervaloMantenimiento extends Model
 {
     use HasFactory;
 
-    protected $guarded = ['id', 'equipo_id'];
+    protected $guarded = ['id'];
 
     public function equipo(){
         return $this->belongsTo(Equipo::class);

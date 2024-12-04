@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('intervalo_mantenimientos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('equipo_id')->constrained('equipos')->cascadeOnUpdate()->cascadeOnDelete();
-            $table->integer('intervalo')->nullable()->default(0);
             $table->dateTime('fecha_mantenimiento');
+            $table->integer('estado')->default(1);
             $table->timestamps();
         });
     }
